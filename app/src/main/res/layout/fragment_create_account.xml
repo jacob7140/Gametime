@@ -2,64 +2,124 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#191C7E"
     tools:context=".CreateAccountFragment">
-
-    <EditText
-        android:id="@+id/editTextRegisterName"
-        android:layout_width="360dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:hint="Name"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/buttonRegisterSubmit"
-        android:layout_width="365dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="SUBMIT"
+        android:layout_width="225dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="75dp"
+        android:text="Create Account"
+        app:backgroundTint="#0426FC"
+        app:cornerRadius="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextRegisterPassword" />
 
-    <Button
-        android:id="@+id/buttonRegisterCancel"
+    <TextView
+        android:id="@+id/textViewNewAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="CANCEL"
-        android:textColor="@color/black"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        app:layout_constraintEnd_toEndOf="@+id/buttonRegisterSubmit"
-        app:layout_constraintTop_toBottomOf="@+id/buttonRegisterSubmit" />
+        android:layout_marginTop="50dp"
+        android:text="New Account"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextRegisterPassword"
-        android:layout_width="360dp"
+        android:id="@+id/editTextRegisterFN"
+        android:layout_width="175dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="25dp"
         android:ems="10"
-        android:hint="Password"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="@+id/editTextRegisterEmail"
-        app:layout_constraintStart_toStartOf="@+id/editTextRegisterEmail"
-        app:layout_constraintTop_toBottomOf="@+id/editTextRegisterEmail" />
+        android:hint="First Name"
+        android:inputType="textPersonName"
+        android:shadowColor="#FFFFFF"
+        android:textColor="#FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewNewAccount" />
+
+    <EditText
+        android:id="@+id/editTextRegisterLN"
+        android:layout_width="175dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        android:ems="10"
+        android:hint="Last Name"
+        android:inputType="textPersonName"
+        android:shadowColor="#FFFFFF"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewNewAccount" />
 
     <EditText
         android:id="@+id/editTextRegisterEmail"
-        android:layout_width="360dp"
+        android:layout_width="175dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="50dp"
         android:ems="10"
         android:hint="Email"
         android:inputType="textEmailAddress"
-        app:layout_constraintEnd_toEndOf="@+id/editTextRegisterName"
-        app:layout_constraintStart_toStartOf="@+id/editTextRegisterName"
-        app:layout_constraintTop_toBottomOf="@+id/editTextRegisterName" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextRegisterFN" />
+
+    <EditText
+        android:id="@+id/editTextRegisterBirthday"
+        android:layout_width="175dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:ems="10"
+        android:hint="Birthday"
+        android:inputType="date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextRegisterEmail" />
+
+    <EditText
+        android:id="@+id/editTextRegisterPassword"
+        android:layout_width="175dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:ems="10"
+        android:hint="Password"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="*Must be more than 5 characters"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@+id/editTextRegisterPassword"
+        app:layout_constraintTop_toBottomOf="@+id/editTextRegisterPassword" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="mm/dd/yyyy"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@+id/editTextRegisterPassword"
+        app:layout_constraintTop_toBottomOf="@+id/editTextRegisterBirthday" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

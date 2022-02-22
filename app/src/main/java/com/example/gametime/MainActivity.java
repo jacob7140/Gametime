@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-public class MainActivity extends AppCompatActivity implements CreateAccountFragment.RegisterListener, LoginFragment.LoginListener {
+public class MainActivity extends AppCompatActivity implements CreateAccountFragment.RegisterListener, OpeningFragment.OpeningListner, LoginFragment.LoginListener {
 
     FirebaseAuth mAuth;
 
@@ -15,16 +15,16 @@ public class MainActivity extends AppCompatActivity implements CreateAccountFrag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.rootView, new LoginFragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.rootView, new OpeningFragment()).commit();
     }
 
-    @Override
-    public void gotoLogin() {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.rootView, new LoginFragment())
-                .commit();
-    }
+//    @Override
+//    public void gotoOpening() {
+//        getSupportFragmentManager()
+//                .beginTransaction()
+//                .replace(R.id.rootView, new OpeningFragment())
+//                .commit();
+//    }
 
 
     @Override
@@ -33,6 +33,11 @@ public class MainActivity extends AppCompatActivity implements CreateAccountFrag
                 .beginTransaction()
                 .replace(R.id.rootView, new CreateAccountFragment())
                 .commit();
+    }
+
+    @Override
+    public void gotoLogin() {
+        getSupportFragmentManager().beginTransaction().replace(R.id.rootView, new LoginFragment()).commit();
     }
 
     @Override

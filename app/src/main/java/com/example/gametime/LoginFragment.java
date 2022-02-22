@@ -27,6 +27,8 @@ public class LoginFragment extends Fragment {
         // Required empty public constructor
     }
 
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +48,7 @@ public class LoginFragment extends Fragment {
         editTextPassword = view.findViewById(R.id.editTextLoginPassword);
 
 
-        view.findViewById(R.id.buttonLogin).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.buttonLoginAccount).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String email = editTextEmail.getText().toString();
@@ -72,10 +74,22 @@ public class LoginFragment extends Fragment {
             }
         });
 
-        view.findViewById(R.id.buttonCreateAccount).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.buttonLoginForgotPassword).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.gotoCreateAccount();
+                String email = editTextEmail.getText().toString();
+                if (email.isEmpty()) {
+                    Toast.makeText(getActivity(), "Enter email in email box.", Toast.LENGTH_SHORT).show();
+                } else {
+                    FirebaseAuth.getInstance().sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(getActivity(), "Password reset sent", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
             }
         });
 
@@ -95,7 +109,6 @@ public class LoginFragment extends Fragment {
     }
 
     interface LoginListener{
-        void gotoCreateAccount();
         void gotoHome();
     }
 }

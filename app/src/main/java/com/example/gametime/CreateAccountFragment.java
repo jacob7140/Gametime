@@ -1,6 +1,7 @@
 package com.example.gametime;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,6 +21,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
+import java.util.Calendar;
+
 public class CreateAccountFragment extends Fragment {
 
     private FirebaseAuth mAuth;
@@ -35,7 +38,8 @@ public class CreateAccountFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    EditText editTextName, editTextEmail, editTextPassword;
+    EditText editTextFN, editTextLN, editTextEmail, editTextPassword, editTextBirthday;
+    boolean ofAge;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,35 +48,57 @@ public class CreateAccountFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_create_account, container, false);
 
-        editTextName = view.findViewById(R.id.editTextRegisterName);
+        editTextFN = view.findViewById(R.id.editTextRegisterFN);
+        editTextLN = view.findViewById(R.id.editTextRegisterLN);
         editTextEmail = view.findViewById(R.id.editTextRegisterEmail);
         editTextPassword = view.findViewById(R.id.editTextRegisterPassword);
+        editTextBirthday = view.findViewById(R.id.editTextRegisterBirthday);
 
         view.findViewById(R.id.buttonRegisterSubmit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String email = editTextEmail.getText().toString();
                 String password = editTextPassword.getText().toString();
-                String name = editTextName.getText().toString();
+                String firstName = editTextFN.getText().toString();
+                String lastName = editTextLN.getText().toString();
+                String birthday = editTextBirthday.getText().toString();
 
-                if (email.isEmpty() | name.isEmpty() | password.isEmpty()){
+                int birthYear = Integer.parseInt(birthday.substring(birthday.length() - 4));
+                int birthMonth = Integer.parseInt(birthday.substring(3, 5));
+                int birthDay = Integer.parseInt(birthday.substring(0, 2));
+//                Log.d(TAG, String.valueOf(birthMonth) + "/" + String.valueOf(birthDay) + "/" + String.valueOf(birthYear));
+
+                int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+                int currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1;
+                int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+//                Log.d(TAG, String.valueOf(currentMonth) + "/" + String.valueOf(currentDay) + "/" + String.valueOf(currentYear));
+
+                ofAge = true;
+                if (currentYear - birthYear < 18) {
+                    ofAge = false;
+                }
+
+
+                if (email.isEmpty() | firstName.isEmpty() | password.isEmpty() | lastName.isEmpty() | birthday.isEmpty()){
                     Toast.makeText(getActivity(), "Cannot have empty fields", Toast.LENGTH_SHORT).show();
-                } else if (password.length() < 6){
-                    Toast.makeText(getActivity(), "Password must be longer than 6 characters", Toast.LENGTH_SHORT).show();
+                } else if (password.length() < 6) {
+                    Toast.makeText(getActivity(), "Password must be longer than 5 characters", Toast.LENGTH_SHORT).show();
+
+                } else if (!ofAge) {
+                    Toast.makeText(getActivity(), "You must be at least 18 years old", Toast.LENGTH_SHORT).show();
                 } else {
                     mAuth = FirebaseAuth.getInstance();
                     mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()){
+                            if (task.isSuccessful()) {
                                 Log.d(TAG, "onComplete: Successfully created new account");
-                                Log.d(TAG, "onComplete: " + name);
+                                Log.d(TAG, "onComplete: " + firstName);
                                 FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
                                 UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                        .setDisplayName(name).build();
+                                        .setDisplayName(firstName).build();
                                 user1.updateProfile(profileUpdates);
                                 mListener.gotoHome();
-
                             } else{
                                 Log.d(TAG, "onComplete: Could not create new account" + task.getException().getMessage());
                                 Toast.makeText(getActivity(), "Error creating account", Toast.LENGTH_SHORT).show();
@@ -86,12 +112,12 @@ public class CreateAccountFragment extends Fragment {
             }
         });
 
-        view.findViewById(R.id.buttonRegisterCancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.gotoLogin();
-            }
-        });
+//        view.findViewById(R.id.buttonRegisterCancel).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mListener.gotoLogin();
+//            }
+//        });
 
         return view;
     }
