@@ -1,7 +1,6 @@
 package com.example.gametime;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -39,6 +39,7 @@ public class CreateAccountFragment extends Fragment {
     }
 
     EditText editTextFN, editTextLN, editTextEmail, editTextPassword, editTextBirthday;
+    ImageButton imageButtonBack;
     boolean ofAge;
 
     @Override
@@ -53,6 +54,15 @@ public class CreateAccountFragment extends Fragment {
         editTextEmail = view.findViewById(R.id.editTextRegisterEmail);
         editTextPassword = view.findViewById(R.id.editTextRegisterPassword);
         editTextBirthday = view.findViewById(R.id.editTextRegisterBirthday);
+
+        imageButtonBack = view.findViewById(R.id.imageButtonCreateAccountBack);
+
+        imageButtonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.gotoOpening();
+            }
+        });
 
         view.findViewById(R.id.buttonRegisterSubmit).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,10 +105,11 @@ public class CreateAccountFragment extends Fragment {
                                 Log.d(TAG, "onComplete: Successfully created new account");
                                 Log.d(TAG, "onComplete: " + firstName);
                                 FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
+
                                 UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                         .setDisplayName(firstName).build();
                                 user1.updateProfile(profileUpdates);
-                                mListener.gotoHome();
+                                mListener.gotoOpening();
                             } else{
                                 Log.d(TAG, "onComplete: Could not create new account" + task.getException().getMessage());
                                 Toast.makeText(getActivity(), "Error creating account", Toast.LENGTH_SHORT).show();
@@ -137,5 +148,6 @@ public class CreateAccountFragment extends Fragment {
     interface RegisterListener{
         void gotoLogin();
         void gotoHome();
+        void gotoOpening();
     }
 }

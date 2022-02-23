@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -35,6 +36,7 @@ public class LoginFragment extends Fragment {
     }
 
     EditText editTextEmail, editTextPassword;
+    ImageButton imageButtonBack;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,6 +48,14 @@ public class LoginFragment extends Fragment {
 
         editTextEmail = view.findViewById(R.id.editTextLoginEmail);
         editTextPassword = view.findViewById(R.id.editTextLoginPassword);
+        imageButtonBack = view.findViewById(R.id.imageButtonLoginBack);
+
+        imageButtonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.gotoOpening();
+            }
+        });
 
 
         view.findViewById(R.id.buttonLoginAccount).setOnClickListener(new View.OnClickListener() {
@@ -110,5 +120,6 @@ public class LoginFragment extends Fragment {
 
     interface LoginListener{
         void gotoHome();
+        void gotoOpening();
     }
 }
