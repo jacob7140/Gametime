@@ -5,10 +5,10 @@ import com.google.firebase.Timestamp;
 import java.io.Serializable;
 
 public class Game implements Serializable {
-    String address, createdByName, gameName, gameDate, gameTime, numberPeople, createdByUid, forumId;
+    String address, createdByName, gameName, gameDate, gameTime, numberPeople, createdByUid, gameId;
     Timestamp createdAt;
 
-    public Game(String address, String createdByName, String gameName, String gameDate, String gameTime, String numberPeople, String createdByUid, String forumId, Timestamp createdAt) {
+    public Game(String address, Timestamp createdAt, String createdByName, String createdByUid, String gameDate, String gameName, String gameTime, String numberPeople, String gameId) {
         this.address = address;
         this.createdByName = createdByName;
         this.gameName = gameName;
@@ -16,8 +16,12 @@ public class Game implements Serializable {
         this.gameTime = gameTime;
         this.numberPeople = numberPeople;
         this.createdByUid = createdByUid;
-        this.forumId = forumId;
+        this.gameId = gameId;
         this.createdAt = createdAt;
+    }
+
+    public Game(){
+
     }
 
     public String getAddress() {
@@ -84,12 +88,12 @@ public class Game implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public String getForumId() {
-        return forumId;
+    public String getGameId() {
+        return gameId;
     }
 
-    public void setForumId(String forumId) {
-        this.forumId = forumId;
+    public void setGameId(String gameId) {
+        this.gameId = gameId;
     }
 
     @Override
