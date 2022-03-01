@@ -81,7 +81,7 @@ public class CreateGameFragment extends Fragment {
         view.findViewById(R.id.buttonCreatePost).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+                SimpleDateFormat formatter= new SimpleDateFormat("MM-dd-yyyy 'at' HH:mm:ss z");
                 Date date = new Date(System.currentTimeMillis());
                 String currentDate = formatter.format(date);
 
@@ -101,13 +101,13 @@ public class CreateGameFragment extends Fragment {
                 gamePost.put("gameTime", time);
                 gamePost.put("gameDate", gameDate);
 
-                if (gameName.isEmpty() | address.isEmpty() | numberPeople.isEmpty() | time.isEmpty() | gameDate.isEmpty()) {
+                if (gameName.isEmpty() | address.isEmpty() | numberPeople.isEmpty() | time.isEmpty()) {
                     Toast.makeText(getActivity(), "Fields Can not be empty", Toast.LENGTH_SHORT).show();
                 } else {
                     db.collection("games").add(gamePost).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
                         public void onSuccess(DocumentReference documentReference) {
-                            Toast.makeText(getActivity(), "Created game post", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(getActivity(), "Created game post", Toast.LENGTH_SHORT).show();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -133,11 +133,11 @@ public class CreateGameFragment extends Fragment {
         try {
             mListener = (CreateGameListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement LoginListener");
+            throw new ClassCastException(context.toString() + " must implement RegisterListener");
         }
     }
 
-    interface CreateGameListener {
+    interface CreateGameListener{
         void gotoHome();
     }
 }

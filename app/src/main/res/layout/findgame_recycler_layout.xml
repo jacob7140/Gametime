@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#191C7E">
+
+    <TextView
+        android:id="@+id/recyclerGameName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:text="Game name"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/recyclerGameDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Game Date"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="@+id/recyclerGameName"
+        app:layout_constraintStart_toStartOf="@+id/recyclerGameName"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerGameName" />
+
+    <TextView
+        android:id="@+id/recyclerGameTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Game Time"
+        android:textColor="#FFFFFF"
+        android:paddingBottom="20dp"
+        app:layout_constraintStart_toStartOf="@+id/recyclerGameName"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerGameDate" />
+
+    <ImageView
+        android:id="@+id/imageVireRecyclerTrash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageViewLike"
+        app:layout_constraintEnd_toStartOf="@+id/imageViewLike"
+        app:srcCompat="@android:drawable/ic_menu_delete" />
+
+    <ImageView
+        android:id="@+id/imageViewLike"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/like_not_favorite" />
+</androidx.constraintlayout.widget.ConstraintLayout>

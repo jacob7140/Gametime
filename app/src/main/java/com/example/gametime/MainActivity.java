@@ -1,3 +1,11 @@
+/*
+TODO: Add a section for people to comment on each game item.
+TODO: Implement favorite games
+TODO: Implement user profile fragments
+TODO: Implement notifications - New game posted, new comment, change to game you registered for
+TODO: Figure out way to determine number of seats left for each game item
+ */
+
 package com.example.gametime;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -6,7 +14,8 @@ import android.os.Bundle;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-public class MainActivity extends AppCompatActivity implements CreateAccountFragment.RegisterListener, OpeningFragment.OpeningListner, LoginFragment.LoginListener, HomeFragment.HomeListener, CreateGameFragment.CreateGameListener {
+public class MainActivity extends AppCompatActivity implements CreateAccountFragment.RegisterListener, OpeningFragment.OpeningListner, LoginFragment.LoginListener, HomeFragment.HomeListener, CreateGameFragment.CreateGameListener,
+        GamesListFragment.GamesListFragmentListener{
 
     FirebaseAuth mAuth;
 
@@ -41,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements CreateAccountFrag
 
     @Override
     public void gotoFindGame() {
-
+        getSupportFragmentManager().beginTransaction().replace(R.id.rootView, new GamesListFragment()).commit();
     }
 
     @Override
@@ -52,6 +61,11 @@ public class MainActivity extends AppCompatActivity implements CreateAccountFrag
     @Override
     public void gotoHome() {
         getSupportFragmentManager().beginTransaction().replace(R.id.rootView, new HomeFragment()).commit();
+    }
+
+    @Override
+    public void gotoGameItem(Game game) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.rootView, GameItemFragment.newInstance(game)).commit();
     }
 
     @Override
