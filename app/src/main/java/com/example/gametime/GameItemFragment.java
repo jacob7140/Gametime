@@ -1,12 +1,15 @@
 package com.example.gametime;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.firebase.Timestamp;
@@ -38,6 +41,7 @@ public class GameItemFragment extends Fragment {
     }
 
     TextView gameName, location, gameDate, numPeople, seatsLeft, datePosted, postedBy;
+    ImageButton buttonBack;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,6 +56,7 @@ public class GameItemFragment extends Fragment {
         seatsLeft = view.findViewById(R.id.textViewItemSeatsLeft);
         datePosted = view.findViewById(R.id.textViewItemDatePosted);
         postedBy = view.findViewById(R.id.textViewItemPostedBy);
+        buttonBack = view.findViewById(R.id.imageButtonGameItemBack);
 
         gameName.setText(mGame.getGameName());
         location.setText(mGame.getAddress());
@@ -65,6 +70,29 @@ public class GameItemFragment extends Fragment {
 
         //TODO: Implement Sign up
 
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.gotoGameList();
+            }
+        });
+
         return view;
+    }
+
+    GameItemListener mListener;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            mListener = (GameItemListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement RegisterListener");
+        }
+    }
+
+    interface GameItemListener{
+        void gotoGameList();
     }
 }

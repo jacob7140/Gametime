@@ -15,7 +15,7 @@ import android.os.Bundle;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity implements CreateAccountFragment.RegisterListener, OpeningFragment.OpeningListner, LoginFragment.LoginListener, HomeFragment.HomeListener, CreateGameFragment.CreateGameListener,
-        GamesListFragment.GamesListFragmentListener{
+        GamesListFragment.GamesListFragmentListener, GameItemFragment.GameItemListener {
 
     FirebaseAuth mAuth;
 
@@ -71,5 +71,10 @@ public class MainActivity extends AppCompatActivity implements CreateAccountFrag
     @Override
     public void gotoOpening() {
         getSupportFragmentManager().beginTransaction().replace(R.id.rootView, new OpeningFragment()).commit();
+    }
+
+    @Override
+    public void gotoGameList() {
+        getSupportFragmentManager().beginTransaction().replace(R.id.rootView, new GamesListFragment()).commit();
     }
 }
