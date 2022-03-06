@@ -3,7 +3,7 @@ TODO: Add a section for people to comment on each game item.
 TODO: Implement favorite games
 TODO: Implement user profile fragments
 TODO: Implement notifications - New game posted, new comment, change to game you registered for
-TODO: Figure out way to determine number of seats left for each game item
+TODO: Delete games if date is passed
  */
 
 package com.example.gametime;

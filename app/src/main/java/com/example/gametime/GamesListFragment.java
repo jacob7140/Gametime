@@ -1,6 +1,8 @@
 package com.example.gametime;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +21,7 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
@@ -25,12 +29,14 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GamesListFragment extends Fragment {
 
     FirebaseFirestore db1 = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseUser user = mAuth.getCurrentUser();
+    final private String TAG = "data";
 
     public GamesListFragment() {
         // Required empty public constructor
@@ -137,17 +143,66 @@ public class GamesListFragment extends Fragment {
                 textViewGameDate.setText(mGame.gameDate);
                 textViewGameTime.setText(mGame.gameTime);
 
-                if (mGame.getCreatedByUid().equals(mAuth.getCurrentUser().getUid())) {
+                if (mGame.getCreatedByUid().equals(user.getUid())) {
                     imageViewTrash.setVisibility(View.VISIBLE);
                     imageViewTrash.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            db1.collection("games").document(mGame.getGameId()).delete();
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                            builder.setCancelable(true);
+                            builder.setTitle("Are you sure you want to delete this game?");
+                            builder.setMessage("By confirming, you will remove this game post from everyone's list!");
+                            builder.setPositiveButton("Confirm",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            db1.collection("games").document(mGame.getGameId()).delete();
+                                        }
+                                    });
+                            builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            });
+
+                            AlertDialog dialog = builder.create();
+                            dialog.show();
                         }
                     });
                 } else {
                     imageViewTrash.setVisibility(View.INVISIBLE);
                 }
+
+                if (mGame.getLikedBy().contains(user.getUid())){
+                    imageViewLike.setImageResource(R.drawable.like_favorite);
+                } else {
+                    imageViewLike.setImageResource(R.drawable.like_not_favorite);
+                }
+
+                imageViewLike.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (mGame.getLikedBy().contains(mAuth.getCurrentUser().getUid())){
+                            imageViewLike.setImageResource(R.drawable.like_not_favorite);
+                            mGame.likedBy.remove(mAuth.getCurrentUser().getUid());
+
+                            HashMap<String, Object> unlikeUpdate = new HashMap<>();
+                            HashMap<String, Object> updateLikedBy = new HashMap<>();
+                            updateLikedBy.put("likedBy", FieldValue.arrayRemove(user.getUid()));
+                            db1.collection("games").document(mGame.getGameId()).update(updateLikedBy);
+
+                            Log.d(TAG, "onClick: Unlike Post" + mGame.getLikedBy());
+
+                        } else {
+                            mGame.likedBy.add(mAuth.getCurrentUser().getUid());
+                            imageViewLike.setImageResource(R.drawable.like_favorite);
+                            HashMap<String, Object> updateLikedBy = new HashMap<>();
+                            updateLikedBy.put("likedBy", FieldValue.arrayUnion(user.getUid()));
+                            db1.collection("games").document(mGame.getGameId()).update(updateLikedBy);
+                            Log.d(TAG, mGame.getLikedBy().toString());
+                        }
+                    }
+                });
             }
         }
     }

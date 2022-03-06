@@ -24,6 +24,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +45,8 @@ public class CreateGameFragment extends Fragment {
     CalendarView calendarView;
     ImageButton imageBack;
     String gameDate;
+    ArrayList<String> likedBy = new ArrayList<>();
+    ArrayList<String> signedUp = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,7 +80,6 @@ public class CreateGameFragment extends Fragment {
             }
         });
 
-
         view.findViewById(R.id.buttonCreatePost).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,6 +92,7 @@ public class CreateGameFragment extends Fragment {
                 String numberPeople = editTextNumberPeople.getText().toString();
                 String time = editTextTime.getText().toString();
 
+                signedUp.add(user.getUid());
 
                 Map<String, Object> gamePost = new HashMap<>();
                 gamePost.put("createdByName", user.getDisplayName());
@@ -100,8 +103,10 @@ public class CreateGameFragment extends Fragment {
                 gamePost.put("numberPeople", numberPeople);
                 gamePost.put("gameTime", time);
                 gamePost.put("gameDate", gameDate);
+                gamePost.put("likedBy", likedBy);
+                gamePost.put("signedUp", signedUp);
 
-                if (gameName.isEmpty() | address.isEmpty() | numberPeople.isEmpty() | time.isEmpty()) {
+                if (gameName.isEmpty() | address.isEmpty() | numberPeople.isEmpty() | time.isEmpty() | gameDate == null) {
                     Toast.makeText(getActivity(), "Fields Can not be empty", Toast.LENGTH_SHORT).show();
                 } else {
                     db.collection("games").add(gamePost).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -116,8 +121,8 @@ public class CreateGameFragment extends Fragment {
                             Log.d(TAG, e.toString());
                         }
                     });
+                    mListener.gotoHome();
                 }
-                mListener.gotoHome();
             }
 
         });

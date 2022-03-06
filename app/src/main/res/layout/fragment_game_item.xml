@@ -51,7 +51,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView18" />
 
     <Button
-        android:id="@+id/buttonSignUp"
+        android:id="@+id/buttonGameItemSignUp"
         android:layout_width="225dp"
         android:layout_height="75dp"
         android:text="Sign Up For Game"
@@ -60,7 +60,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView18" />
+        app:layout_constraintTop_toBottomOf="@+id/textView19" />
 
     <TextView
         android:id="@+id/textViewItemDatePosted"

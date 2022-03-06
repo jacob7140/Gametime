@@ -3,12 +3,16 @@ package com.example.gametime;
 import com.google.firebase.Timestamp;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Game implements Serializable {
     String address, createdByName, gameName, gameDate, gameTime, numberPeople, createdByUid, gameId;
     Timestamp createdAt;
+    ArrayList<String> likedBy = new ArrayList<>();
+    ArrayList<String> signedUp = new ArrayList<>();
 
-    public Game(String address, Timestamp createdAt, String createdByName, String createdByUid, String gameDate, String gameName, String gameTime, String numberPeople, String gameId) {
+    public Game(String address, String createdByName, String gameName, String gameDate, String gameTime, String numberPeople, String createdByUid,
+                String gameId, Timestamp createdAt, ArrayList<String> likedBy, ArrayList<String> signedUp) {
         this.address = address;
         this.createdByName = createdByName;
         this.gameName = gameName;
@@ -18,6 +22,8 @@ public class Game implements Serializable {
         this.createdByUid = createdByUid;
         this.gameId = gameId;
         this.createdAt = createdAt;
+        this.likedBy = likedBy;
+        this.signedUp = signedUp;
     }
 
     public Game(){
@@ -96,6 +102,22 @@ public class Game implements Serializable {
         this.gameId = gameId;
     }
 
+    public ArrayList<String> getLikedBy() {
+        return likedBy;
+    }
+
+    public void setLikedBy(ArrayList<String> likedBy) {
+        this.likedBy = likedBy;
+    }
+
+    public ArrayList<String> getSignedUp() {
+        return signedUp;
+    }
+
+    public void setSignedUp(ArrayList<String> signedUp) {
+        this.signedUp = signedUp;
+    }
+
     @Override
     public String toString() {
         return "Game{" +
@@ -106,7 +128,10 @@ public class Game implements Serializable {
                 ", gameTime='" + gameTime + '\'' +
                 ", numberPeople='" + numberPeople + '\'' +
                 ", createdByUid='" + createdByUid + '\'' +
+                ", gameId='" + gameId + '\'' +
                 ", createdAt=" + createdAt +
+                ", likedBy=" + likedBy +
+                ", signedUp=" + signedUp +
                 '}';
     }
 }

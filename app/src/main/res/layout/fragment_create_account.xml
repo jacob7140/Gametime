@@ -50,9 +50,9 @@
         android:layout_marginTop="25dp"
         android:ems="10"
         android:hint="First Name"
+        android:backgroundTint="#FFFFFF"
+        android:textColorHint="#FFFFFF"
         android:inputType="textPersonName"
-        android:shadowColor="#FFFFFF"
-        android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewNewAccount" />
 
@@ -66,8 +66,8 @@
         android:ems="10"
         android:hint="Last Name"
         android:inputType="textPersonName"
-        android:shadowColor="#FFFFFF"
-        android:textColor="#FFFFFF"
+        android:backgroundTint="#FFFFFF"
+        android:textColorHint="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewNewAccount" />
 
@@ -79,7 +79,8 @@
         android:ems="10"
         android:hint="Email"
         android:inputType="textEmailAddress"
-        android:textColor="#FFFFFF"
+        android:backgroundTint="#FFFFFF"
+        android:textColorHint="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextRegisterFN" />
@@ -92,7 +93,8 @@
         android:ems="10"
         android:hint="Birthday"
         android:inputType="date"
-        android:textColor="#FFFFFF"
+        android:backgroundTint="#FFFFFF"
+        android:textColorHint="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextRegisterEmail" />
@@ -105,7 +107,8 @@
         android:ems="10"
         android:hint="Password"
         android:inputType="textPassword"
-        android:textColor="#FFFFFF"
+        android:backgroundTint="#FFFFFF"
+        android:textColorHint="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
