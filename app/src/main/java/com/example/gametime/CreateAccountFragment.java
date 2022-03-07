@@ -38,7 +38,8 @@ public class CreateAccountFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    EditText editTextFN, editTextLN, editTextEmail, editTextPassword, editTextBirthday;
+    EditText editTextFN, editTextLN, editTextEmail, editTextPassword,
+            editTextConfirmPassword, editTextBirthday;
     ImageButton imageButtonBack;
     boolean ofAge;
 
@@ -53,6 +54,7 @@ public class CreateAccountFragment extends Fragment {
         editTextLN = view.findViewById(R.id.editTextRegisterLN);
         editTextEmail = view.findViewById(R.id.editTextRegisterEmail);
         editTextPassword = view.findViewById(R.id.editTextRegisterPassword);
+        editTextConfirmPassword = view.findViewById(R.id.editTextRegisterConfirmPassword);
         editTextBirthday = view.findViewById(R.id.editTextRegisterBirthday);
 
         imageButtonBack = view.findViewById(R.id.imageButtonCreateAccountBack);
@@ -69,6 +71,7 @@ public class CreateAccountFragment extends Fragment {
             public void onClick(View v) {
                 String email = editTextEmail.getText().toString();
                 String password = editTextPassword.getText().toString();
+                String confirmPassword = editTextConfirmPassword.getText().toString();
                 String firstName = editTextFN.getText().toString();
                 String lastName = editTextLN.getText().toString();
                 String birthday = editTextBirthday.getText().toString();

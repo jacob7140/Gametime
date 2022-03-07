@@ -91,7 +91,17 @@ public class GameItemFragment extends Fragment {
             }
         });
 
-        if (mGame.getSignedUp().contains(user.getUid())) {
+        if (mGame.getCreatedByUid().equals(user.getUid())) {
+            signUpForGame.setText("Delete Post");
+            signUpForGame.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DeleteGame deleteGame = new DeleteGame();
+                    deleteGame.deleteGamePost(mGame, getContext(), db);
+                    mListener.gotoGameList();
+                }
+            });
+        } else if (mGame.getSignedUp().contains(user.getUid())) {
             signUpForGame.setText("Withdraw");
             signUpForGame.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -122,7 +132,8 @@ public class GameItemFragment extends Fragment {
                     dialog.show();
                 }
             });
-        } else {
+        }
+        else {
             signUpForGame.setText("Sign Up");
             signUpForGame.setOnClickListener(new View.OnClickListener() {
                 @Override

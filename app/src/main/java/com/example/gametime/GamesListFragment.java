@@ -148,25 +148,8 @@ public class GamesListFragment extends Fragment {
                     imageViewTrash.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                            builder.setCancelable(true);
-                            builder.setTitle("Are you sure you want to delete this game?");
-                            builder.setMessage("By confirming, you will remove this game post from everyone's list!");
-                            builder.setPositiveButton("Confirm",
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            db1.collection("games").document(mGame.getGameId()).delete();
-                                        }
-                                    });
-                            builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            });
-
-                            AlertDialog dialog = builder.create();
-                            dialog.show();
+                            DeleteGame deleteGame = new DeleteGame();
+                            deleteGame.deleteGamePost(mGame, getContext(), db1);
                         }
                     });
                 } else {
