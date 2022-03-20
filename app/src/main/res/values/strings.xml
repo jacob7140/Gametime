@@ -9,5 +9,15 @@
         <item>Mystery</item>
         <item>Combat</item>
         <item>Legacy</item>
+        <item>Other</item>
+    </string-array>
+
+    <string-array name="preferences_array_changed">
+        <item>Strategy</item>
+        <item>Co-op</item>
+        <item>Mystery</item>
+        <item>Combat</item>
+        <item>Legacy</item>
+        <item>Other</item>
     </string-array>
 </resources>
