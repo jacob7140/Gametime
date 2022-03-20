@@ -54,7 +54,7 @@ public class GameItemFragment extends Fragment {
         }
     }
 
-    TextView gameName, location, gameDate, numPeople, seatsLeft, datePosted, postedBy;
+    TextView gameName, location, gameDate, numPeople, seatsLeft, datePosted, postedBy, gameType;
     ImageButton buttonBack;
     Button signUpForGame;
 
@@ -74,6 +74,7 @@ public class GameItemFragment extends Fragment {
         postedBy = view.findViewById(R.id.textViewItemPostedBy);
         buttonBack = view.findViewById(R.id.imageButtonGameItemBack);
         signUpForGame = view.findViewById(R.id.buttonGameItemSignUp);
+        gameType = view.findViewById(R.id.textViewItemGameType);
 
         gameName.setText(mGame.getGameName());
         location.setText(mGame.getAddress());
@@ -83,6 +84,7 @@ public class GameItemFragment extends Fragment {
         // TODO: Fix format
         datePosted.setText(mGame.getCreatedAt().toString());
         postedBy.setText(mGame.getCreatedByName());
+        gameType.setText(mGame.getGameType());
 
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
