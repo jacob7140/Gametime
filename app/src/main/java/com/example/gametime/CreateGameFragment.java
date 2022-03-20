@@ -1,5 +1,6 @@
 package com.example.gametime;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -10,9 +11,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -23,6 +27,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,6 +49,7 @@ public class CreateGameFragment extends Fragment {
     EditText editTextName, editTextAddress, editTextNumberPeople, editTextTime;
     CalendarView calendarView;
     ImageButton imageBack;
+    Spinner dropdown;
     String gameDate;
     ArrayList<String> likedBy = new ArrayList<>();
     ArrayList<String> signedUp = new ArrayList<>();
@@ -60,6 +66,8 @@ public class CreateGameFragment extends Fragment {
 
         calendarView = view.findViewById(R.id.calendarViewCreate);
         imageBack  =view.findViewById(R.id.imageButtonCreateAccountBack);
+
+        dropdown = view.findViewById(R.id.pickerPreferenceCreateGame);
 
         imageBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,6 +87,10 @@ public class CreateGameFragment extends Fragment {
 
             }
         });
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.preferences_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        dropdown.setAdapter(adapter);
 
         view.findViewById(R.id.buttonCreatePost).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,6 +141,8 @@ public class CreateGameFragment extends Fragment {
 
         return view;
     }
+
+    //testing
 
     CreateGameListener mListener;
 
