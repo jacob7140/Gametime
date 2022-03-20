@@ -2,6 +2,7 @@ package com.example.gametime;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -51,6 +53,7 @@ public class CreateGameFragment extends Fragment {
     ImageButton imageBack;
     Spinner dropdown;
     String gameDate;
+    String preferenceSelection;
     ArrayList<String> likedBy = new ArrayList<>();
     ArrayList<String> signedUp = new ArrayList<>();
 
@@ -92,6 +95,21 @@ public class CreateGameFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
         dropdown.setAdapter(adapter);
 
+        dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                int getId = parent.getSelectedItemPosition();
+                preferenceSelection = String.valueOf(parent.getItemAtPosition(position));
+                ((TextView) parent.getChildAt(0)).setTextColor(Color.parseColor("#FFFFFF"));
+//                Log.d(TAG, preferenceSelection);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         view.findViewById(R.id.buttonCreatePost).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,8 +135,9 @@ public class CreateGameFragment extends Fragment {
                 gamePost.put("gameDate", gameDate);
                 gamePost.put("likedBy", likedBy);
                 gamePost.put("signedUp", signedUp);
+                gamePost.put("gameType", preferenceSelection);
 
-                if (gameName.isEmpty() | address.isEmpty() | numberPeople.isEmpty() | time.isEmpty() | gameDate == null) {
+                if (gameName.isEmpty() | address.isEmpty() | numberPeople.isEmpty() | time.isEmpty() | gameDate == null | preferenceSelection.isEmpty()) {
                     Toast.makeText(getActivity(), "Fields Can not be empty", Toast.LENGTH_SHORT).show();
                 } else {
                     db.collection("games").add(gamePost).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
