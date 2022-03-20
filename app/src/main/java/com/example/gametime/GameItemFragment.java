@@ -3,6 +3,7 @@ package com.example.gametime;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -55,7 +56,7 @@ public class GameItemFragment extends Fragment {
     }
 
     TextView gameName, location, gameDate, numPeople, seatsLeft, datePosted, postedBy;
-    ImageButton buttonBack;
+    ImageButton buttonBack, shareIt;
     Button signUpForGame;
 
     @Override
@@ -74,6 +75,7 @@ public class GameItemFragment extends Fragment {
         postedBy = view.findViewById(R.id.textViewItemPostedBy);
         buttonBack = view.findViewById(R.id.imageButtonGameItemBack);
         signUpForGame = view.findViewById(R.id.buttonGameItemSignUp);
+        shareIt = view.findViewById(R.id.imageButtonShare);
 
         gameName.setText(mGame.getGameName());
         location.setText(mGame.getAddress());
@@ -90,6 +92,23 @@ public class GameItemFragment extends Fragment {
                 mListener.gotoGameList();
             }
         });
+
+        shareIt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent=new Intent(Intent.ACTION_SEND);
+                myIntent.setType("text/plain");
+                String message="Let's play this game!";
+
+                // This should be changed to the real refferal link
+                message = message+ "\n" + "https://play.google.com/store/apps/details?id=" +
+                       BuildConfig.APPLICATION_ID;
+
+                myIntent.putExtra(Intent.EXTRA_TEXT, message);
+                startActivity(Intent.createChooser(myIntent,"Share with"));
+            }
+        });
+
 
         if (mGame.getCreatedByUid().equals(user.getUid())) {
             signUpForGame.setText("Delete Post");

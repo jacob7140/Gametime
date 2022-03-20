@@ -60,7 +60,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView19" />
+        app:layout_constraintTop_toBottomOf="@+id/textView19"
+        app:layout_constraintVertical_bias="0.269" />
 
     <TextView
         android:id="@+id/textViewItemDatePosted"
@@ -188,5 +189,19 @@
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@+id/textViewItemLocation"
         app:layout_constraintTop_toTopOf="@+id/textView9" />
+
+
+    <ImageButton
+        android:id="@+id/imageButtonShare"
+        android:layout_width="65dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="172dp"
+        android:layout_marginTop="636dp"
+        android:background="#191C7E"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        android:src="@drawable/share"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
