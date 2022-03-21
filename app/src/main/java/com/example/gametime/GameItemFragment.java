@@ -22,6 +22,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 public class GameItemFragment extends Fragment {
@@ -81,9 +83,13 @@ public class GameItemFragment extends Fragment {
         gameDate.setText(mGame.getGameDate());
         numPeople.setText(mGame.getNumberPeople());
         seatsLeft.setText(numSeatsLeft);
-        // TODO: Fix format
-        datePosted.setText(mGame.getCreatedAt().toString());
+
+        SimpleDateFormat formatter= new SimpleDateFormat("MM-dd-yyyy 'at' hh:mm aa");
+        Date createdAt = mGame.getCreatedAt().toDate();
+        String formattedDate = formatter.format(createdAt);
+        datePosted.setText(formattedDate);
         postedBy.setText(mGame.getCreatedByName());
+
         gameType.setText(mGame.getGameType());
 
         buttonBack.setOnClickListener(new View.OnClickListener() {
