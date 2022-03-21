@@ -76,7 +76,7 @@ public class GamesListFragment extends Fragment {
                 int getId = parent.getSelectedItemPosition();
                 preferenceSelection = String.valueOf(parent.getItemAtPosition(position));
                 ((TextView) parent.getChildAt(0)).setTextColor(Color.parseColor("#FFFFFF"));
-                Log.d(TAG, preferenceSelection);
+//                Log.d(TAG, preferenceSelection);
                 setupGamesListener();
             }
 
