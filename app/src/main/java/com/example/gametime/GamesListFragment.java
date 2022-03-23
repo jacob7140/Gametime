@@ -3,6 +3,7 @@ package com.example.gametime;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,7 +16,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -51,12 +55,36 @@ public class GamesListFragment extends Fragment {
     RecyclerView.LayoutManager layoutManager;
     ArrayList<Game> gamesList = new ArrayList<Game>();
     GamesAdapter adapter;
+    Spinner dropdown;
+    String preferenceSelection;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_games_list, container, false);
+
+        dropdown = view.findViewById(R.id.spinnerGameListPreference);
+
+        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.preferences_array, android.R.layout.simple_spinner_item);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        dropdown.setAdapter(spinnerAdapter);
+
+        dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                int getId = parent.getSelectedItemPosition();
+                preferenceSelection = String.valueOf(parent.getItemAtPosition(position));
+                ((TextView) parent.getChildAt(0)).setTextColor(Color.parseColor("#FFFFFF"));
+//                Log.d(TAG, preferenceSelection);
+                setupGamesListener();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         recyclerView = view.findViewById(R.id.findGameRecyclerView);
         recyclerView.setHasFixedSize(true);
@@ -65,7 +93,7 @@ public class GamesListFragment extends Fragment {
         adapter = new GamesAdapter();
         recyclerView.setAdapter(adapter);
 
-        setupGamesListener();
+//        setupGamesListener();
 
         view.findViewById(R.id.imageButtonFindBack).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,23 +106,43 @@ public class GamesListFragment extends Fragment {
     }
 
     private void setupGamesListener() {
-        db1.collection("games").orderBy("gameTime", Query.Direction.ASCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException error) {
-                if (error == null) {
-                    gamesList.clear();
-                    for (QueryDocumentSnapshot document : querySnapshot) {
-                        Game game = document.toObject(Game.class);
-                        game.setGameId(document.getId());
-                        gamesList.add(game);
+        if (preferenceSelection.equals("All")) {
+            db1.collection("games").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException error) {
+                    if (error == null) {
+                        gamesList.clear();
+                        for (QueryDocumentSnapshot document : querySnapshot) {
+                            Game game = document.toObject(Game.class);
+                            game.setGameId(document.getId());
+                            gamesList.add(game);
+                        }
+                        adapter.notifyDataSetChanged();
+                    } else {
+                        error.printStackTrace();
                     }
-                    adapter.notifyDataSetChanged();
-                } else {
-                    error.printStackTrace();
                 }
-            }
-        });
+            });
+        } else {
+            db1.collection("games").whereEqualTo("gameType", preferenceSelection).addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException error) {
+                    if (error == null) {
+                        gamesList.clear();
+                        for (QueryDocumentSnapshot document : querySnapshot) {
+                            Game game = document.toObject(Game.class);
+                            game.setGameId(document.getId());
+                            gamesList.add(game);
+                        }
+                        adapter.notifyDataSetChanged();
+                    } else {
+                        error.printStackTrace();
+                    }
+                }
+            });
+        }
     }
+
 
     class GamesAdapter extends RecyclerView.Adapter<GamesAdapter.GamesViewHolder> {
 

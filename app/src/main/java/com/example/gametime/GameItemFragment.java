@@ -22,6 +22,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 public class GameItemFragment extends Fragment {
@@ -54,7 +56,7 @@ public class GameItemFragment extends Fragment {
         }
     }
 
-    TextView gameName, location, gameDate, numPeople, seatsLeft, datePosted, postedBy;
+    TextView gameName, location, gameDate, numPeople, seatsLeft, datePosted, postedBy, gameType;
     ImageButton buttonBack;
     Button signUpForGame, messageUserForGame;
 
@@ -74,6 +76,8 @@ public class GameItemFragment extends Fragment {
         postedBy = view.findViewById(R.id.textViewItemPostedBy);
         buttonBack = view.findViewById(R.id.imageButtonGameItemBack);
         signUpForGame = view.findViewById(R.id.buttonGameItemSignUp);
+        gameType = view.findViewById(R.id.textViewItemGameType);
+
         messageUserForGame = view.findViewById(R.id.buttonGameItemSendMessage);
 
         gameName.setText(mGame.getGameName());
@@ -81,9 +85,14 @@ public class GameItemFragment extends Fragment {
         gameDate.setText(mGame.getGameDate());
         numPeople.setText(mGame.getNumberPeople());
         seatsLeft.setText(numSeatsLeft);
-        // TODO: Fix format
-        datePosted.setText(mGame.getCreatedAt().toString());
+
+        SimpleDateFormat formatter= new SimpleDateFormat("MM-dd-yyyy 'at' hh:mm aa");
+        Date createdAt = mGame.getCreatedAt().toDate();
+        String formattedDate = formatter.format(createdAt);
+        datePosted.setText(formattedDate);
         postedBy.setText(mGame.getCreatedByName());
+
+        gameType.setText(mGame.getGameType());
 
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override

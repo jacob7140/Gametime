@@ -6,13 +6,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Game implements Serializable {
-    String address, createdByName, gameName, gameDate, gameTime, numberPeople, createdByUid, gameId;
+    String address, createdByName, gameName, gameDate, gameTime, numberPeople, createdByUid, gameId, gameType;
     Timestamp createdAt;
     ArrayList<String> likedBy = new ArrayList<>();
     ArrayList<String> signedUp = new ArrayList<>();
 
     public Game(String address, String createdByName, String gameName, String gameDate, String gameTime, String numberPeople, String createdByUid,
-                String gameId, Timestamp createdAt, ArrayList<String> likedBy, ArrayList<String> signedUp) {
+                String gameId, Timestamp createdAt, ArrayList<String> likedBy, ArrayList<String> signedUp, String gameType) {
         this.address = address;
         this.createdByName = createdByName;
         this.gameName = gameName;
@@ -24,6 +24,7 @@ public class Game implements Serializable {
         this.createdAt = createdAt;
         this.likedBy = likedBy;
         this.signedUp = signedUp;
+        this.gameType = gameType;
     }
 
     public Game(){
@@ -118,6 +119,14 @@ public class Game implements Serializable {
         this.signedUp = signedUp;
     }
 
+    public String getGameType() {
+        return gameType;
+    }
+
+    public void setGameType(String gameType) {
+        this.gameType = gameType;
+    }
+
     @Override
     public String toString() {
         return "Game{" +
@@ -129,6 +138,7 @@ public class Game implements Serializable {
                 ", numberPeople='" + numberPeople + '\'' +
                 ", createdByUid='" + createdByUid + '\'' +
                 ", gameId='" + gameId + '\'' +
+                ", gameType='" + gameType + '\'' +
                 ", createdAt=" + createdAt +
                 ", likedBy=" + likedBy +
                 ", signedUp=" + signedUp +

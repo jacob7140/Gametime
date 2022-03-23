@@ -9,6 +9,16 @@
     tools:context=".GameItemFragment">
 
     <TextView
+        android:id="@+id/textViewItemGameType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Text"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/textViewItemDatePosted"
+        app:layout_constraintTop_toTopOf="@+id/textView8" />
+
+    <TextView
         android:id="@+id/textViewItemDate2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -166,13 +176,24 @@
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@+id/textView11"
+        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Game Type"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/textView11"
         app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
     <TextView
         android:id="@+id/textViewItemLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="75dp"
+        android:layout_marginStart="50dp"
         android:text="Text"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
