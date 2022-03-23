@@ -58,7 +58,7 @@ public class GameItemFragment extends Fragment {
 
     TextView gameName, location, gameDate, numPeople, seatsLeft, datePosted, postedBy, gameType;
     ImageButton buttonBack;
-    Button signUpForGame;
+    Button signUpForGame, messageUserForGame;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,6 +77,8 @@ public class GameItemFragment extends Fragment {
         buttonBack = view.findViewById(R.id.imageButtonGameItemBack);
         signUpForGame = view.findViewById(R.id.buttonGameItemSignUp);
         gameType = view.findViewById(R.id.textViewItemGameType);
+
+        messageUserForGame = view.findViewById(R.id.buttonGameItemSendMessage);
 
         gameName.setText(mGame.getGameName());
         location.setText(mGame.getAddress());
@@ -109,6 +111,14 @@ public class GameItemFragment extends Fragment {
                     mListener.gotoGameList();
                 }
             });
+            messageUserForGame.setVisibility(View.VISIBLE);
+            messageUserForGame.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.gotoChatMessage(mGame);
+                }
+
+            });
         } else if (mGame.getSignedUp().contains(user.getUid())) {
             signUpForGame.setText("Withdraw");
             signUpForGame.setOnClickListener(new View.OnClickListener() {
@@ -140,9 +150,18 @@ public class GameItemFragment extends Fragment {
                     dialog.show();
                 }
             });
+            messageUserForGame.setVisibility(View.VISIBLE);
+            messageUserForGame.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.gotoChatMessage(mGame);
+                }
+
+            });
         }
         else {
             signUpForGame.setText("Sign Up");
+            messageUserForGame.setVisibility(View.INVISIBLE);
             signUpForGame.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -173,5 +192,6 @@ public class GameItemFragment extends Fragment {
 
     interface GameItemListener{
         void gotoGameList();
+        void gotoChatMessage(Game game);
     }
 }

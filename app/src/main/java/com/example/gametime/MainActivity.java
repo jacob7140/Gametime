@@ -15,7 +15,7 @@ import android.os.Bundle;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity implements CreateAccountFragment.RegisterListener, OpeningFragment.OpeningListner, LoginFragment.LoginListener, HomeFragment.HomeListener, CreateGameFragment.CreateGameListener,
-        GamesListFragment.GamesListFragmentListener, GameItemFragment.GameItemListener {
+        GamesListFragment.GamesListFragmentListener, GameItemFragment.GameItemListener, ChatMessageFragment.ChatMessageListener {
 
     FirebaseAuth mAuth;
 
@@ -79,4 +79,10 @@ public class MainActivity extends AppCompatActivity implements CreateAccountFrag
     public void gotoGameList() {
         getSupportFragmentManager().beginTransaction().replace(R.id.rootView, new GamesListFragment()).commit();
     }
+
+    @Override
+    public void gotoChatMessage(Game game) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.rootView, new ChatMessageFragment(game)).commit();
+    }
+
 }
