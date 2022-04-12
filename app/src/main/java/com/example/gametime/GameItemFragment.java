@@ -1,22 +1,22 @@
 package com.example.gametime;
 
+import static com.example.gametime.MainActivity.PreviousViewState;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.firebase.Timestamp;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FieldValue;
@@ -58,6 +58,7 @@ public class GameItemFragment extends Fragment {
 
     TextView gameName, location, gameDate, numPeople, seatsLeft, datePosted, postedBy, gameType;
     ImageButton buttonBack;
+    ImageView imageViewEdit;
     Button signUpForGame, messageUserForGame;
 
     @Override
@@ -75,6 +76,7 @@ public class GameItemFragment extends Fragment {
         datePosted = view.findViewById(R.id.textViewItemDatePosted);
         postedBy = view.findViewById(R.id.textViewItemPostedBy);
         buttonBack = view.findViewById(R.id.imageButtonGameItemBack);
+        imageViewEdit = view.findViewById(R.id.imageViewEditIconGameItem);
         signUpForGame = view.findViewById(R.id.buttonGameItemSignUp);
         gameType = view.findViewById(R.id.textViewItemGameType);
 
@@ -102,6 +104,7 @@ public class GameItemFragment extends Fragment {
         });
 
         if (mGame.getCreatedByUid().equals(user.getUid())) {
+            imageViewEdit.setVisibility(View.VISIBLE);
             signUpForGame.setText("Delete Post");
             signUpForGame.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -109,6 +112,12 @@ public class GameItemFragment extends Fragment {
                     DeleteGame deleteGame = new DeleteGame();
                     deleteGame.deleteGamePost(mGame, getContext(), db);
                     mListener.gotoGameList();
+                }
+            });
+            imageViewEdit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mListener.gotoEditGame(mGame, PreviousViewState.GAMEITEM);
                 }
             });
             messageUserForGame.setVisibility(View.VISIBLE);
@@ -120,6 +129,7 @@ public class GameItemFragment extends Fragment {
 
             });
         } else if (mGame.getSignedUp().contains(user.getUid())) {
+            imageViewEdit.setVisibility(View.INVISIBLE);
             signUpForGame.setText("Withdraw");
             signUpForGame.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -193,5 +203,6 @@ public class GameItemFragment extends Fragment {
     interface GameItemListener{
         void gotoGameList();
         void gotoChatMessage(Game game);
+        void gotoEditGame(Game game, PreviousViewState viewState);
     }
 }

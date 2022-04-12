@@ -15,10 +15,14 @@ import android.os.Bundle;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity implements CreateAccountFragment.RegisterListener, OpeningFragment.OpeningListner, LoginFragment.LoginListener, HomeFragment.HomeListener, CreateGameFragment.CreateGameListener,
-        GamesListFragment.GamesListFragmentListener, GameItemFragment.GameItemListener, ChatMessageFragment.ChatMessageListener {
+        GamesListFragment.GamesListFragmentListener, GameItemFragment.GameItemListener, ChatMessageFragment.ChatMessageListener, EditGameFragment.EditGameListener {
 
     FirebaseAuth mAuth;
-
+    public enum PreviousViewState {
+        MAIN,
+        GAMEITEM,
+        GAMESLIST
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +52,15 @@ public class MainActivity extends AppCompatActivity implements CreateAccountFrag
     @Override
     public void gotoCreateGame() {
         getSupportFragmentManager().beginTransaction().replace(R.id.rootView, new CreateGameFragment()).commit();
+    }
+
+    public void gotoEditGame(Game game) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.rootView, new EditGameFragment(game)).commit();
+    }
+
+    @Override
+    public void gotoEditGame(Game game, PreviousViewState viewState) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.rootView, new EditGameFragment(game, viewState)).commit();
     }
 
     @Override
