@@ -61,4 +61,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/like_not_favorite" />
+
+    <ImageView
+        android:id="@+id/imageViewEditIcon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="15dp"
+        app:layout_constraintBottom_toBottomOf="@id/imageVireRecyclerTrash"
+        app:layout_constraintEnd_toStartOf="@id/imageVireRecyclerTrash"
+        app:srcCompat="@drawable/edit_icon" />
 </androidx.constraintlayout.widget.ConstraintLayout>

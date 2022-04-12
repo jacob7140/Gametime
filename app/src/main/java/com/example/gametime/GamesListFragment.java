@@ -1,5 +1,6 @@
 package com.example.gametime;
 
+import com.example.gametime.MainActivity.PreviousViewState;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -167,7 +168,7 @@ public class GamesListFragment extends Fragment {
         class GamesViewHolder extends RecyclerView.ViewHolder {
             Game mGame;
             TextView textViewGameName, textViewGameDate, textViewGameTime;
-            ImageView imageViewTrash, imageViewLike;
+            ImageView imageViewTrash, imageViewLike, imageViewEdit;
 
             public GamesViewHolder(@NonNull View itemView) {
                 super(itemView);
@@ -176,6 +177,7 @@ public class GamesListFragment extends Fragment {
                 textViewGameTime = itemView.findViewById(R.id.recyclerGameTime);
                 imageViewTrash = itemView.findViewById(R.id.imageVireRecyclerTrash);
                 imageViewLike = itemView.findViewById(R.id.imageViewLike);
+                imageViewEdit = itemView.findViewById(R.id.imageViewEditIcon);
 
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -192,7 +194,15 @@ public class GamesListFragment extends Fragment {
                 textViewGameTime.setText(mGame.gameTime);
 
                 if (mGame.getCreatedByUid().equals(user.getUid())) {
+                    imageViewEdit.setVisibility(View.VISIBLE);
                     imageViewTrash.setVisibility(View.VISIBLE);
+
+                    imageViewEdit.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            mListener.gotoEditGame(mGame, PreviousViewState.GAMESLIST);
+                        }
+                    });
                     imageViewTrash.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -201,6 +211,7 @@ public class GamesListFragment extends Fragment {
                         }
                     });
                 } else {
+                    imageViewEdit.setVisibility(View.INVISIBLE);
                     imageViewTrash.setVisibility(View.INVISIBLE);
                 }
 
@@ -253,6 +264,7 @@ public class GamesListFragment extends Fragment {
     interface GamesListFragmentListener{
         void gotoHome();
         void gotoGameItem(Game game);
+        void gotoEditGame(Game game, PreviousViewState viewState);
     }
 
 }
