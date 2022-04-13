@@ -104,7 +104,7 @@ public class GameItemFragment extends Fragment {
         });
 
         if (mGame.getCreatedByUid().equals(user.getUid())) {
-            imageViewEdit.setVisibility(View.VISIBLE);
+
             signUpForGame.setText("Delete Post");
             signUpForGame.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -114,6 +114,7 @@ public class GameItemFragment extends Fragment {
                     mListener.gotoGameList();
                 }
             });
+            imageViewEdit.setVisibility(View.VISIBLE);
             imageViewEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -172,6 +173,7 @@ public class GameItemFragment extends Fragment {
         else {
             signUpForGame.setText("Sign Up");
             messageUserForGame.setVisibility(View.INVISIBLE);
+            imageViewEdit.setVisibility(View.INVISIBLE);
             signUpForGame.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
