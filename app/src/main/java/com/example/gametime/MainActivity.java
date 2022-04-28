@@ -9,20 +9,39 @@ TODO: Delete games if date is passed
 package com.example.gametime;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.icu.util.Calendar;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity implements CreateAccountFragment.RegisterListener, OpeningFragment.OpeningListner, LoginFragment.LoginListener, HomeFragment.HomeListener, CreateGameFragment.CreateGameListener,
-        GamesListFragment.GamesListFragmentListener, GameItemFragment.GameItemListener, ChatMessageFragment.ChatMessageListener, EditGameFragment.EditGameListener {
+        GamesListFragment.GamesListFragmentListener, GameItemFragment.GameItemListener, ChatMessageFragment.ChatMessageListener, EditGameFragment.EditGameListener, CollectionInboxFragment.CollectionInboxListener,
+        MessageListFragment.MessageListFragmentListener, NotificationListFragment.NotificationListFragmentListener {
 
+    private static final String CHANNEL_ID = "Notification Channel";
     FirebaseAuth mAuth;
     public enum PreviousViewState {
         MAIN,
         GAMEITEM,
-        GAMESLIST
+        GAMESLIST,
+        INBOX
     }
+
+    public MainActivity(){};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +56,9 @@ public class MainActivity extends AppCompatActivity implements CreateAccountFrag
         } else{
             getSupportFragmentManager().beginTransaction().replace(R.id.rootView, new HomeFragment()).commit();
         }
+
     }
+
 
     //testing
 
@@ -94,8 +115,19 @@ public class MainActivity extends AppCompatActivity implements CreateAccountFrag
     }
 
     @Override
-    public void gotoChatMessage(Game game) {
-        getSupportFragmentManager().beginTransaction().replace(R.id.rootView, new ChatMessageFragment(game)).commit();
+    public void gotoChatMessage(Game game, PreviousViewState viewState) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.rootView, new ChatMessageFragment(game, viewState)).commit();
     }
 
+    public void gotoInbox(){
+        getSupportFragmentManager().beginTransaction().replace(R.id.rootView, new CollectionInboxFragment()).commit();
+    }
+
+    public void gotoMessageList(){
+        getSupportFragmentManager().beginTransaction().replace(R.id.rootView, new MessageListFragment()).commit();
+    }
+
+    public void gotoNotificationList(){
+        getSupportFragmentManager().beginTransaction().replace(R.id.rootView, new NotificationListFragment()).commit();
+    }
 }

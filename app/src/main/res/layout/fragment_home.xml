@@ -42,6 +42,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonHomeCreateGame" />
 
+    <Button
+        android:id="@+id/buttonHomeInbox"
+        android:layout_width="225dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="25dp"
+        android:text="Inbox"
+        app:backgroundTint="#0426FC"
+        app:cornerRadius="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonHomeFindGame" />
+
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="370dp"

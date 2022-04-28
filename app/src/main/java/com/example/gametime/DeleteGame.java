@@ -11,11 +11,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 public class DeleteGame implements Serializable {
 
@@ -30,6 +32,13 @@ public class DeleteGame implements Serializable {
                     public void onClick(DialogInterface dialog, int which) {
                         deleteAllMessagesWithinTheGameChatRoom(mGame, db);
                         db.collection("games").document(mGame.getGameId()).delete();
+                        new Notification(mGame.getCreatedByName(), mGame.getCreatedByUid(), mGame.getGameName()).sendNotificationTo(Notification.Notification_Type.DELETED);
+                        for(String signedUserId : mGame.getSignedUp()){
+                            HashMap<String, Object> userdata = new HashMap<>();
+                            userdata.put("SignedGameID", FieldValue.arrayRemove(mGame.getGameId()));
+                            db.collection("userdata").document(signedUserId).update(userdata);
+                            new Notification(mGame.getCreatedByName(), signedUserId, mGame.getGameName()).sendNotificationTo(Notification.Notification_Type.CANCELED);
+                        }
                     }
                 });
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {

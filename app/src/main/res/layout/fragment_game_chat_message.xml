@@ -42,11 +42,11 @@
             android:id="@+id/backgroundBehindInputBox"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/findMessageRecyclerView"
+            android:layout_below="@id/findNotificationRecyclerView"
             android:background="#191C7E" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/findMessageRecyclerView"
+            android:id="@+id/findNotificationRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/textInputLayout"

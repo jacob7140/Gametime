@@ -25,6 +25,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
+        android:ellipsize="middle"
+        android:maxLength="25"
+        android:maxLines="1"
         android:text="Default Name"
         android:textColor="#1E88E5"
         android:textStyle="normal|bold"
@@ -36,14 +39,26 @@
         android:id="@+id/textViewNotificationMsg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="10dp"
         android:text="TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT "
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="#1565C0"
         android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/textViewHostedBy"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/textViewNotificationGameName"
         app:layout_constraintTop_toBottomOf="@+id/textViewNotificationGameName" />
+
+    <TextView
+        android:id="@+id/textViewHostedBy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hosted By: Name"
+        android:textColor="#1565C0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewNotificationMsg"
+        tools:layout_constraintTop_toBottomOf="@id/textViewNotificationMsg" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

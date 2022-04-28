@@ -1,15 +1,15 @@
 package com.example.gametime;
 
+import com.example.gametime.MainActivity.PreviousViewState;
+
 import android.content.Context;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,7 +38,10 @@ public class ChatMessageFragment extends Fragment {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     final private String TAG = "data";
     private Game game;
-    public ChatMessageFragment(Game game) { this.game = game; }
+    private PreviousViewState viewState;
+    public ChatMessageFragment(Game game){ this.game = game;}
+
+    public ChatMessageFragment(Game game, PreviousViewState viewState) { this.game = game; this.viewState = viewState;}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,6 +50,7 @@ public class ChatMessageFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
+
     private ArrayList<Message> messagesList = new ArrayList<Message>();
     private MessagesAdapter adapter;
 
@@ -59,11 +63,11 @@ public class ChatMessageFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_game_chat_message, container, false);
-        recyclerView = view.findViewById(R.id.findMessageRecyclerView);
+        recyclerView = view.findViewById(R.id.findNotificationRecyclerView);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new MessagesAdapter();
+        adapter = new MessagesAdapter(messagesList);
         recyclerView.setAdapter(adapter);
         backButton = view.findViewById(R.id.imageBackButtonToGame);
         sendMessageButton = view.findViewById(R.id.send_message);
@@ -87,7 +91,11 @@ public class ChatMessageFragment extends Fragment {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mListener.gotoGameItem(game);
+                if(viewState == PreviousViewState.INBOX){
+                    mListener.gotoInbox();
+                } else {
+                    mListener.gotoGameItem(game);
+                }
             }
         });
 
@@ -113,45 +121,6 @@ public class ChatMessageFragment extends Fragment {
         });
     }
 
-    class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MessagesViewHolder> {
-        @NonNull
-        @Override
-        public ChatMessageFragment.MessagesAdapter.MessagesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.findmessage_recycler_layout, parent, false);
-            return new ChatMessageFragment.MessagesAdapter.MessagesViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull MessagesAdapter.MessagesViewHolder holder, int position) {
-            Message msg = messagesList.get(position);
-            holder.setUpMessageRow(msg);
-        }
-
-        @Override
-        public int getItemCount() {
-            return messagesList.size();
-        }
-
-        class MessagesViewHolder extends RecyclerView.ViewHolder {
-            private Message msg;
-            private TextView textViewTextMsg, textViewMsgTime, textViewPostedByName;
-            public MessagesViewHolder(@NonNull View itemView) {
-                super(itemView);
-                textViewTextMsg = itemView.findViewById(R.id.textViewTextMessage);
-                textViewMsgTime = itemView.findViewById(R.id.textViewMessageTime);
-                textViewPostedByName = itemView.findViewById(R.id.textViewPostedByName);
-            }
-
-            public void setUpMessageRow(Message msg){
-                this.msg = msg;
-                textViewTextMsg.setText(msg.getTextMsg());
-                textViewMsgTime.setText(DateFormat.format("dd-MM-yyyy (h:mm aa)",
-                        msg.getMsgTime()));
-                textViewPostedByName.setText(msg.getCreatedByName());
-            }
-        }
-    }
-
     ChatMessageListener mListener;
 
     @Override
@@ -166,6 +135,7 @@ public class ChatMessageFragment extends Fragment {
 
     interface ChatMessageListener{
         void gotoGameItem(Game game);
+        void gotoInbox();
     }
 
 }

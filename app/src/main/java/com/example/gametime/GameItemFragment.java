@@ -17,12 +17,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -125,7 +128,7 @@ public class GameItemFragment extends Fragment {
             messageUserForGame.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.gotoChatMessage(mGame);
+                    mListener.gotoChatMessage(mGame, PreviousViewState.GAMEITEM);
                 }
 
             });
@@ -148,6 +151,9 @@ public class GameItemFragment extends Fragment {
                                     updateSignedUp.put("signedUp", FieldValue.arrayRemove(user.getUid()));
                                     db.collection("games").document(mGame.getGameId()).update(updateSignedUp);
 
+                                    HashMap<String, Object> userdata = new HashMap<>();
+                                    userdata.put("SignedGameID", FieldValue.arrayRemove(mGame.getGameId()));
+                                    db.collection("userdata").document(user.getUid()).update(userdata);
                                     mListener.gotoGameList();
                                 }
                             });
@@ -165,7 +171,7 @@ public class GameItemFragment extends Fragment {
             messageUserForGame.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.gotoChatMessage(mGame);
+                    mListener.gotoChatMessage(mGame, PreviousViewState.GAMEITEM);
                 }
 
             });
@@ -182,6 +188,18 @@ public class GameItemFragment extends Fragment {
                     updateSignedUp.put("signedUp", FieldValue.arrayUnion(user.getUid()));
                     db.collection("games").document(mGame.getGameId()).update(updateSignedUp);
 
+                    HashMap<String, Object> userdata = new HashMap<>();
+                    userdata.put("SignedGameID", FieldValue.arrayUnion(mGame.getGameId()));
+                    db.collection("userdata").document(user.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            if(documentSnapshot.exists()){
+                                db.collection("userdata").document(user.getUid()).update(userdata);
+                            } else {
+                                db.collection("userdata").document(user.getUid()).set(userdata);
+                            }
+                        }
+                    });
                     mListener.gotoGameList();
                 }
             });
@@ -204,7 +222,7 @@ public class GameItemFragment extends Fragment {
 
     interface GameItemListener{
         void gotoGameList();
-        void gotoChatMessage(Game game);
+        void gotoChatMessage(Game game, PreviousViewState viewState);
         void gotoEditGame(Game game, PreviousViewState viewState);
     }
 }
