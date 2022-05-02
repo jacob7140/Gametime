@@ -10,6 +10,7 @@ public class Message implements Serializable {
 
     private String textMsg, createdByName, createdByUid, msgId;
     private long msgTime;
+
     public Message(){ }
 
     public Message(String textMsg, String createdByName, String createdByUid){

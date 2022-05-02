@@ -55,6 +55,11 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        view.findViewById(R.id.buttonHomeInbox).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) { mListener.gotoInbox(); }
+        });
+
         view.findViewById(R.id.buttonHomeLogout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,5 +87,6 @@ public class HomeFragment extends Fragment {
         void gotoCreateGame();
         void gotoFindGame();
         void gotoOpening();
+        void gotoInbox();
     }
 }

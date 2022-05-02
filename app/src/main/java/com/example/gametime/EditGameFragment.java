@@ -113,13 +113,11 @@ public class EditGameFragment extends Fragment {
         if(gameDate == null) {
             updateCalendarInfo();
             gameDate = year + "/" + month + "/" + day;
-            Log.d("Date Selected", gameDate);
         }
 
         imageBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Log.d("Previous View State", viewState.toString());
                 if(viewState == PreviousViewState.GAMEITEM){
                     mListener.gotoGameItem(game);
                 } else if(viewState == PreviousViewState.GAMESLIST){
@@ -140,7 +138,6 @@ public class EditGameFragment extends Fragment {
                 gameDate = setYear + "/" + setMonth + "/" + setDay;
                 calendar.set(year, month, dayOfMonth);
                 updateCalendarInfo();
-                //Log.d("Date Selected", gameDate);
             }
         });
 
@@ -228,7 +225,7 @@ public class EditGameFragment extends Fragment {
                         db.collection("games").document(game.getGameId()).update(gamePost).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-
+                                new Notification(user.getDisplayName(), user.getUid(), gameName).sendNotificationTo(Notification.Notification_Type.UPDATED);
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -238,7 +235,6 @@ public class EditGameFragment extends Fragment {
                             }
                         });
 
-                        //Log.d("Previous View State", viewState.toString());
                         if(viewState == PreviousViewState.GAMEITEM){
                             mListener.gotoGameItem(game);
                         } else if(viewState == PreviousViewState.GAMESLIST) {
@@ -261,9 +257,6 @@ public class EditGameFragment extends Fragment {
         long currentDay = now.getTimeInMillis() / (24 * 60 * 60 * 1000);
         long selectedDay = calendar.getTimeInMillis() / (24 * 60 * 60 * 1000);
         differenceInDays = selectedDay - currentDay;
-        //Log.d("Current: ", Long.toString(currentDay));
-        //Log.d("Selected: ", Long.toString(selectedDay));
-        //Log.d("Difference In Days: ", Long.toString(differenceInDays));
     }
 
     EditGameListener mListener;

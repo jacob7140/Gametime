@@ -21,12 +21,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.lang.reflect.Array;
@@ -41,7 +45,6 @@ public class CreateGameFragment extends Fragment {
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     final private String TAG = "data";
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -143,6 +146,23 @@ public class CreateGameFragment extends Fragment {
                     db.collection("games").add(gamePost).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
                         public void onSuccess(DocumentReference documentReference) {
+                            gamePost.put("gameID", documentReference.getId());
+                            db.collection("games").document(documentReference.getId()).update(gamePost);
+
+                            Map<String, Object> userdata = new HashMap<String, Object>();
+                            userdata.put("SignedGameID", FieldValue.arrayUnion(documentReference.getId()));
+                            db.collection("userdata").document(user.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    if(documentSnapshot.exists()){
+                                        db.collection("userdata").document(user.getUid()).update(userdata);
+                                    } else {
+                                        db.collection("userdata").document(user.getUid()).set(userdata);
+                                    }
+                                }
+                            });
+
+                            new Notification(user.getDisplayName(), user.getUid(), gameName).sendNotificationTo(Notification.Notification_Type.CREATED);
 //                            Toast.makeText(getActivity(), "Created game post", Toast.LENGTH_SHORT).show();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
