@@ -23,6 +23,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -106,33 +107,46 @@ public class GameItemFragment extends Fragment {
             }
         });
 
-        if (mGame.getCreatedByUid().equals(user.getUid())) {
+        db.collection("userdata").document(user.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                String userRole = "";
+                if(documentSnapshot.exists()){
+                    if(documentSnapshot.contains("Role")){
+                        userRole = (String) documentSnapshot.get("Role");
+                    }
+                }
+                if (mGame.getCreatedByUid().equals(user.getUid()) || userRole.equals("Admin")) {
 
-            signUpForGame.setText("Delete Post");
-            signUpForGame.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    DeleteGame deleteGame = new DeleteGame();
-                    deleteGame.deleteGamePost(mGame, getContext(), db);
-                    mListener.gotoGameList();
-                }
-            });
-            imageViewEdit.setVisibility(View.VISIBLE);
-            imageViewEdit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mListener.gotoEditGame(mGame, PreviousViewState.GAMEITEM);
-                }
-            });
-            messageUserForGame.setVisibility(View.VISIBLE);
-            messageUserForGame.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mListener.gotoChatMessage(mGame, PreviousViewState.GAMEITEM);
-                }
+                    signUpForGame.setText("Delete Post");
+                    signUpForGame.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            DeleteGame deleteGame = new DeleteGame();
+                            deleteGame.deleteGamePost(mGame, getContext(), db);
+                            mListener.gotoGameList();
+                        }
+                    });
+                    imageViewEdit.setVisibility(View.VISIBLE);
+                    imageViewEdit.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            mListener.gotoEditGame(mGame, PreviousViewState.GAMEITEM);
+                        }
+                    });
+                    messageUserForGame.setVisibility(View.VISIBLE);
+                    messageUserForGame.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mListener.gotoChatMessage(mGame, PreviousViewState.GAMEITEM);
+                        }
 
-            });
-        } else if (mGame.getSignedUp().contains(user.getUid())) {
+                    });
+                }
+            }
+        });
+
+        if (mGame.getSignedUp().contains(user.getUid())) {
             imageViewEdit.setVisibility(View.INVISIBLE);
             signUpForGame.setText("Withdraw");
             signUpForGame.setOnClickListener(new View.OnClickListener() {
