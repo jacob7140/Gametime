@@ -4,30 +4,19 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/mshal/Desktop/Team 5 Project/Gametime/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2065" />
-        <entry key="..\:/Users/mshal/Desktop/Team 5 Project/Gametime/app/src/main/res/drawable/ic_launcher_background.xml" value="0.299" />
-        <entry key="..\:/Users/mshal/Desktop/Team 5 Project/Gametime/app/src/main/res/drawable/notify_circle.xml" value="0.299" />
         <entry key="..\:/Users/mshal/Desktop/Team 5 Project/Gametime/app/src/main/res/drawable/rounded_border.xml" value="0.32" />
         <entry key="..\:/Users/mshal/Desktop/Team 5 Project/Gametime/app/src/main/res/layout/activity_main.xml" value="0.358695652173913" />
         <entry key="..\:/Users/mshal/Desktop/Team 5 Project/Gametime/app/src/main/res/layout/findgame_recycler_layout.xml" value="0.25" />
         <entry key="..\:/Users/mshal/Desktop/Team 5 Project/Gametime/app/src/main/res/layout/findmessage_recycler_layout.xml" value="0.33" />
-        <entry key="..\:/Users/mshal/Desktop/Team 5 Project/Gametime/app/src/main/res/layout/findnotification_recycler_layout.xml" value="0.33" />
-        <entry key="..\:/Users/mshal/Desktop/Team 5 Project/Gametime/app/src/main/res/layout/fragement_inbox.xml" value="0.22" />
         <entry key="..\:/Users/mshal/Desktop/Team 5 Project/Gametime/app/src/main/res/layout/fragment_create_account.xml" value="0.358695652173913" />
         <entry key="..\:/Users/mshal/Desktop/Team 5 Project/Gametime/app/src/main/res/layout/fragment_create_game.xml" value="0.358695652173913" />
         <entry key="..\:/Users/mshal/Desktop/Team 5 Project/Gametime/app/src/main/res/layout/fragment_game_chat_message.xml" value="0.33" />
         <entry key="..\:/Users/mshal/Desktop/Team 5 Project/Gametime/app/src/main/res/layout/fragment_game_item.xml" value="0.358695652173913" />
         <entry key="..\:/Users/mshal/Desktop/Team 5 Project/Gametime/app/src/main/res/layout/fragment_game_message.xml" value="0.23143115942028986" />
-        <entry key="..\:/Users/mshal/Desktop/Team 5 Project/Gametime/app/src/main/res/layout/fragment_games_list.xml" value="0.23143115942028986" />
-        <entry key="..\:/Users/mshal/Desktop/Team 5 Project/Gametime/app/src/main/res/layout/fragment_home.xml" value="0.67" />
-        <entry key="..\:/Users/mshal/Desktop/Team 5 Project/Gametime/app/src/main/res/layout/fragment_inbox.xml" value="0.33" />
-        <entry key="..\:/Users/mshal/Desktop/Team 5 Project/Gametime/app/src/main/res/layout/fragment_inbox_collection.xml" value="0.25" />
-        <entry key="..\:/Users/mshal/Desktop/Team 5 Project/Gametime/app/src/main/res/layout/fragment_inbox_object.xml" value="0.2665457842248413" />
+        <entry key="..\:/Users/mshal/Desktop/Team 5 Project/Gametime/app/src/main/res/layout/fragment_game_preference_list.xml" value="0.20949123557075675" />
+        <entry key="..\:/Users/mshal/Desktop/Team 5 Project/Gametime/app/src/main/res/layout/fragment_games_list.xml" value="0.32162661737523107" />
         <entry key="..\:/Users/mshal/Desktop/Team 5 Project/Gametime/app/src/main/res/layout/fragment_login.xml" value="0.358695652173913" />
         <entry key="..\:/Users/mshal/Desktop/Team 5 Project/Gametime/app/src/main/res/layout/fragment_message.xml" value="0.18802083333333333" />
-        <entry key="..\:/Users/mshal/Desktop/Team 5 Project/Gametime/app/src/main/res/layout/fragment_message_list.xml" value="0.20949123557075675" />
-        <entry key="..\:/Users/mshal/Desktop/Team 5 Project/Gametime/app/src/main/res/layout/fragment_messages.xml" value="0.24524025385312784" />
-        <entry key="..\:/Users/mshal/Desktop/Team 5 Project/Gametime/app/src/main/res/layout/fragment_notification_list.xml" value="0.24524025385312784" />
-        <entry key="..\:/Users/mshal/Desktop/Team 5 Project/Gametime/app/src/main/res/layout/fragment_notifications.xml" value="0.15911151405258386" />
         <entry key="..\:/Users/mshal/Desktop/Team 5 Project/Gametime/app/src/main/res/layout/fragment_opening.xml" value="0.358695652173913" />
         <entry key="..\:/Users/mshal/Desktop/Team 5 Project/Gametime/app/src/main/res/layout/message.xml" value="0.2509057971014493" />
       </map>

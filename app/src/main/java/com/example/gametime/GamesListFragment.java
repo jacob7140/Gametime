@@ -9,6 +9,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,12 +21,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -36,7 +48,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class GamesListFragment extends Fragment {
+public class GamesListFragment extends Fragment{
 
     FirebaseFirestore db1 = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -58,6 +70,8 @@ public class GamesListFragment extends Fragment {
     GamesAdapter adapter;
     Spinner dropdown;
     String preferenceSelection;
+    ArrayList<String> gamePreferenceList;
+    ArrayAdapter<String> spinnerAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,8 +80,29 @@ public class GamesListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_games_list, container, false);
 
         dropdown = view.findViewById(R.id.spinnerGameListPreference);
+        gamePreferenceList = new ArrayList<>();
+        gamePreferenceList.add("All");
+        spinnerAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, gamePreferenceList);
 
-        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.preferences_array, android.R.layout.simple_spinner_item);
+        db1.collection("gamePreferences").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot querySnapshots) {
+                gamePreferenceList.clear();
+                gamePreferenceList.add("All");
+                gamePreferenceList.add("Loading...");
+                for(QueryDocumentSnapshot documentSnapshot : querySnapshots){
+                    gamePreferenceList.add((String) documentSnapshot.get("Type"));
+                }
+                gamePreferenceList.remove("Loading...");
+                gamePreferenceList.add("Other");
+                gamePreferenceList.add("<Add to List>");
+                gamePreferenceList.add("<Remove from List>");
+                Log.d(TAG, "onSuccess: " + spinnerAdapter.toString());
+                spinnerAdapter.notifyDataSetChanged();
+                Log.d(TAG, "onSuccess: " +  dropdown.getCount());
+            }
+        });
+
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
         dropdown.setAdapter(spinnerAdapter);
 
@@ -102,12 +137,12 @@ public class GamesListFragment extends Fragment {
                 mListener.gotoHome();
             }
         });
-
         return view;
     }
 
     private void setupGamesListener() {
         if (preferenceSelection.equals("All")) {
+
             db1.collection("games").addSnapshotListener(new EventListener<QuerySnapshot>() {
                 @Override
                 public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException error) {
@@ -124,6 +159,87 @@ public class GamesListFragment extends Fragment {
                     }
                 }
             });
+        } else if(preferenceSelection.equals("<Add to List>")){
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setCancelable(true);
+            builder.setTitle("Add Game Preference");
+            builder.setMessage("Enter the name of the game preference that you want to add to the list (Case-Sensitive).");
+            EditText editTextGamePreference = new EditText(getContext());
+            builder.setView(editTextGamePreference);
+
+            builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    HashMap<String, Object> gamePreferenceData = new HashMap<>();
+                    gamePreferenceData.put("Type", editTextGamePreference.getText().toString());
+                    gamePreferenceList.add(gamePreferenceList.size() - 2, editTextGamePreference.getText().toString());
+                    db1.collection("gamePreferences").add(gamePreferenceData);
+                }
+            });
+
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                }
+            });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            preferenceSelection = gamePreferenceList.get(0);
+            dropdown.setSelection(0);
+        } else if(preferenceSelection.equals("<Remove from List>")) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setCancelable(true);
+            builder.setTitle("Add Game Preference");
+            builder.setMessage("Enter the name of the game preference that you want to remove from the list (Case-Sensitive).");
+            EditText editTextGamePreference = new EditText(getContext());
+            builder.setView(editTextGamePreference);
+
+            builder.setPositiveButton("Remove", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                    db1.collection("gamePreferences").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot querySnapshots) {
+                            for(QueryDocumentSnapshot documentSnapshot : querySnapshots){
+                                if(documentSnapshot.exists()){
+                                    if(documentSnapshot.contains("Type")){
+                                        String type = (String) documentSnapshot.get("Type");
+                                        if(type.equals(editTextGamePreference.getText().toString())){
+                                            db1.collection("gamePreferences").document(documentSnapshot.getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+                                                    gamePreferenceList.remove(editTextGamePreference.getText().toString());
+                                                    Log.d(TAG, "onSuccess: to delete the item from the game preference list.");
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.d(TAG, "onFailure: to delete the item from the game preference list.");
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                }
+            });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            preferenceSelection = gamePreferenceList.get(0);
+            dropdown.setSelection(0);
         } else {
             db1.collection("games").whereEqualTo("gameType", preferenceSelection).addSnapshotListener(new EventListener<QuerySnapshot>() {
                 @Override
@@ -193,27 +309,40 @@ public class GamesListFragment extends Fragment {
                 textViewGameDate.setText(mGame.gameDate);
                 textViewGameTime.setText(mGame.gameTime);
 
-                if (mGame.getCreatedByUid().equals(user.getUid())) {
-                    imageViewEdit.setVisibility(View.VISIBLE);
-                    imageViewTrash.setVisibility(View.VISIBLE);
+                db1.collection("userdata").document(user.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        String userRole = "";
+                        if (documentSnapshot.exists()) {
+                            if (documentSnapshot.contains("Role")) {
+                                userRole = (String) documentSnapshot.get("Role");
+                            }
+                        }
 
-                    imageViewEdit.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            mListener.gotoEditGame(mGame, PreviousViewState.GAMESLIST);
+                        if (mGame.getCreatedByUid().equals(user.getUid()) || userRole.equals("Admin")) {
+                            imageViewEdit.setVisibility(View.VISIBLE);
+                            imageViewTrash.setVisibility(View.VISIBLE);
+
+                            imageViewEdit.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    mListener.gotoEditGame(mGame, PreviousViewState.GAMESLIST);
+                                }
+                            });
+                            imageViewTrash.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    DeleteGame deleteGame = new DeleteGame();
+                                    deleteGame.deleteGamePost(mGame, getContext(), db1);
+                                }
+                            });
+                        } else {
+                            imageViewEdit.setVisibility(View.INVISIBLE);
+                            imageViewTrash.setVisibility(View.INVISIBLE);
                         }
-                    });
-                    imageViewTrash.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            DeleteGame deleteGame = new DeleteGame();
-                            deleteGame.deleteGamePost(mGame, getContext(), db1);
-                        }
-                    });
-                } else {
-                    imageViewEdit.setVisibility(View.INVISIBLE);
-                    imageViewTrash.setVisibility(View.INVISIBLE);
-                }
+                    }
+                });
+
 
                 if (mGame.getLikedBy().contains(user.getUid())){
                     imageViewLike.setImageResource(R.drawable.like_favorite);
@@ -260,6 +389,7 @@ public class GamesListFragment extends Fragment {
             throw new ClassCastException(context.toString() + " must implement RegisterListener");
         }
     }
+
 
     interface GamesListFragmentListener{
         void gotoHome();
