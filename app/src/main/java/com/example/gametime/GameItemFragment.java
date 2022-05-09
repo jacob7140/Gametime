@@ -88,14 +88,20 @@ public class GameItemFragment extends Fragment {
 
         gameName.setText(mGame.getGameName());
         location.setText(mGame.getAddress());
-        gameDate.setText(mGame.getGameDate());
+
+        SimpleDateFormat formatterDate = new SimpleDateFormat("MM-dd-yyyy");
+        Date gameDateD = mGame.getGameDate().toDate();
+        String formattedGameDate = formatterDate.format(gameDateD);
+        gameDate.setText(formattedGameDate);
+
         numPeople.setText(mGame.getNumberPeople());
         seatsLeft.setText(numSeatsLeft);
 
-        SimpleDateFormat formatter= new SimpleDateFormat("MM-dd-yyyy 'at' hh:mm aa");
+        SimpleDateFormat formatterDateAndTime= new SimpleDateFormat("MM-dd-yyyy 'at' hh:mm aa");
         Date createdAt = mGame.getCreatedAt().toDate();
-        String formattedDate = formatter.format(createdAt);
+        String formattedDate = formatterDateAndTime.format(createdAt);
         datePosted.setText(formattedDate);
+
         postedBy.setText(mGame.getCreatedByName());
 
         gameType.setText(mGame.getGameType());

@@ -36,6 +36,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.lang.reflect.Array;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -57,7 +58,7 @@ public class CreateGameFragment extends Fragment {
     CalendarView calendarView;
     ImageButton imageBack;
     Spinner dropdown;
-    String gameDate;
+    Date gameDate;
     String preferenceSelection;
     ArrayList<String> likedBy = new ArrayList<>();
     ArrayList<String> signedUp = new ArrayList<>();
@@ -92,7 +93,12 @@ public class CreateGameFragment extends Fragment {
                 String setMonth = String.valueOf(month + 1);
                 String setDay = String.valueOf(dayOfMonth);
 
-                gameDate = setYear + "/" + setMonth + "/" + setDay;
+                String gameDateS = setYear + "/" + setMonth + "/" + setDay + " at " + "11:59 PM UTC-4";
+                try {
+                    gameDate = new SimpleDateFormat("yyyy/MM/dd 'at' hh:mm aa").parse(gameDateS);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
 
             }
         });

@@ -181,10 +181,12 @@ public class MessageListFragment extends Fragment {
              * @param game the game object
              */
             public void setUpGameRow(Game game) {
+
                 this.mGame = game;                              //set game to mGame
                 textViewGameName.setText(mGame.getGameName());  //set game name to textView
-                textViewGameDate.setText(mGame.gameDate);       //set game date to textView
+                textViewGameDate.setText(mGame.gameDate.toString());       //set game date to textView
                 textViewGameTime.setText("Group Message");      //set "Group Message" to textView
+
             }
         }
     }

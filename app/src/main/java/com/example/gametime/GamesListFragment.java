@@ -9,8 +9,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,21 +19,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
@@ -45,8 +38,9 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.sql.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 public class GamesListFragment extends Fragment{
@@ -68,6 +62,7 @@ public class GamesListFragment extends Fragment{
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
     ArrayList<Game> gamesList = new ArrayList<Game>();
+    ArrayList<Game> expiredGames = new ArrayList<Game>();
     GamesAdapter adapter;
     Spinner dropdown;
     String preferenceSelection;
@@ -121,14 +116,13 @@ public class GamesListFragment extends Fragment{
             }
         });
 
-        recyclerView = view.findViewById(R.id.findGameRecyclerView);
+        recyclerView = view.findViewById(R.id.hostedGameRecyclerView);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         adapter = new GamesAdapter();
         recyclerView.setAdapter(adapter);
 
-//        setupGamesListener();
 
         view.findViewById(R.id.imageButtonFindBack).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,6 +130,8 @@ public class GamesListFragment extends Fragment{
                 mListener.gotoHome();
             }
         });
+
+        deleteOldDocuments();
         return view;
     }
 
@@ -155,7 +151,7 @@ public class GamesListFragment extends Fragment{
     private void setupGamesListener() {
         if (preferenceSelection.equals("All")) {
 
-            db1.collection("games").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            db1.collection("games").whereGreaterThan("gameDate", Timestamp.now()).orderBy("gameDate", Query.Direction.ASCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
                 @Override
                 public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException error) {
                     if (error == null) {
@@ -254,7 +250,7 @@ public class GamesListFragment extends Fragment{
             preferenceSelection = gamePreferenceList.get(0);
             dropdown.setSelection(0);
         } else {
-            db1.collection("games").whereEqualTo("gameType", preferenceSelection).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            db1.collection("games").whereEqualTo("gameType", preferenceSelection).orderBy("gameDate", Query.Direction.ASCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
                 @Override
                 public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException error) {
                     if (error == null) {
@@ -272,6 +268,24 @@ public class GamesListFragment extends Fragment{
                 }
             });
         }
+    }
+
+    private void deleteOldDocuments() {
+        db1.collection("games").whereLessThanOrEqualTo("gameDate", Timestamp.now()).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException error) {
+                expiredGames.clear();
+                for (QueryDocumentSnapshot document : querySnapshot) {
+                    Game game = document.toObject((Game.class));
+                    game.setGameId(document.getId());
+                    expiredGames.add(game);
+//                    SimpleDateFormat formatterDateAndTime= new SimpleDateFormat("MM-dd-yyyy");
+//                    Date createdAt = game.getGameDate().toDate();
+//                    String formattedDate = formatterDateAndTime.format(createdAt);
+//                    Log.d(TAG, formattedDate);
+                }
+            }
+        });
     }
 
 
@@ -320,7 +334,12 @@ public class GamesListFragment extends Fragment{
             public void setUpGameRow(Game game) {
                 this.mGame = game;
                 textViewGameName.setText(mGame.gameName);
-                textViewGameDate.setText(mGame.gameDate);
+
+                SimpleDateFormat formatterDateAndTime= new SimpleDateFormat("MM-dd-yyyy");
+                Date createdAt = mGame.getGameDate().toDate();
+                String formattedDate = formatterDateAndTime.format(createdAt);
+                textViewGameDate.setText(formattedDate);
+
                 textViewGameTime.setText(mGame.gameTime);
 
                 db1.collection("userdata").document(user.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {

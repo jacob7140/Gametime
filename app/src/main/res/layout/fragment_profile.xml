@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#191C7E"
+    tools:context=".ProfileFragment" >
+
+    <Button
+        android:id="@+id/buttonProfileHome"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:text="Home"
+        app:backgroundTint="#0426FC"
+        app:cornerRadius="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonProfileHostedGames"
+        android:layout_width="225dp"
+        android:layout_height="75dp"
+        android:text="Hosted Games"
+        app:backgroundTint="#0426FC"
+        app:cornerRadius="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonProfileUpcomingGames"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonProfileAccountInfo" />
+
+    <Button
+        android:id="@+id/buttonProfileUpcomingGames"
+        android:layout_width="225dp"
+        android:layout_height="75dp"
+        android:layout_marginBottom="170dp"
+        android:text="Upcoming Games"
+        app:backgroundTint="#0426FC"
+        app:cornerRadius="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/buttonProfileAccountInfo"
+        android:layout_width="225dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="170dp"
+        android:text="Account Info"
+        app:backgroundTint="#0426FC"
+        app:cornerRadius="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

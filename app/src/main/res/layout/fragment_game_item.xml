@@ -19,27 +19,6 @@
         app:layout_constraintTop_toTopOf="@+id/textView8" />
 
     <TextView
-        android:id="@+id/textViewItemDate2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Text"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="@+id/textViewItemLocation"
-        app:layout_constraintTop_toTopOf="@+id/textView20" />
-
-    <TextView
-        android:id="@+id/textView20"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Game Date"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="@+id/textView6"
-        app:layout_constraintTop_toBottomOf="@+id/textView9" />
-
-    <TextView
         android:id="@+id/textViewItemPostedBy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -162,7 +141,7 @@
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@+id/textView9"
-        app:layout_constraintTop_toBottomOf="@+id/textView20" />
+        app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
     <TextView
         android:id="@+id/textView11"
@@ -221,7 +200,7 @@
     <Button
         android:id="@+id/buttonGameItemSendMessage"
         android:layout_width="150dp"
-        android:layout_height="48dp"
+        android:layout_height="65dp"
         android:text="Send Message"
         android:visibility="invisible"
         app:backgroundTint="#0426FC"

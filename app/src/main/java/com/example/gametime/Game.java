@@ -4,14 +4,15 @@ import com.google.firebase.Timestamp;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Game implements Serializable {
-    String address, createdByName, gameName, gameDate, gameTime, numberPeople, createdByUid, gameId, gameType;
-    Timestamp createdAt;
+    String address, createdByName, gameName, gameTime, numberPeople, createdByUid, gameId, gameType;
+    Timestamp createdAt, gameDate;
     ArrayList<String> likedBy = new ArrayList<>();
     ArrayList<String> signedUp = new ArrayList<>();
 
-    public Game(String address, String createdByName, String gameName, String gameDate, String gameTime, String numberPeople, String createdByUid,
+    public Game(String address, String createdByName, String gameName, Timestamp gameDate, String gameTime, String numberPeople, String createdByUid,
                 String gameId, Timestamp createdAt, ArrayList<String> likedBy, ArrayList<String> signedUp, String gameType) {
         this.address = address;
         this.createdByName = createdByName;
@@ -55,11 +56,11 @@ public class Game implements Serializable {
         this.gameName = gameName;
     }
 
-    public String getGameDate() {
+    public Timestamp getGameDate() {
         return gameDate;
     }
 
-    public void setGameDate(String gameDate) {
+    public void setGameDate(Timestamp gameDate) {
         this.gameDate = gameDate;
     }
 
