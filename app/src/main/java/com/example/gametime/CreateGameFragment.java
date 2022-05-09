@@ -34,6 +34,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.lang.reflect.Array;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -55,7 +56,7 @@ public class CreateGameFragment extends Fragment {
     CalendarView calendarView;
     ImageButton imageBack;
     Spinner dropdown;
-    String gameDate;
+    Date gameDate;
     String preferenceSelection;
     ArrayList<String> likedBy = new ArrayList<>();
     ArrayList<String> signedUp = new ArrayList<>();
@@ -89,7 +90,12 @@ public class CreateGameFragment extends Fragment {
                 String setMonth = String.valueOf(month + 1);
                 String setDay = String.valueOf(dayOfMonth);
 
-                gameDate = setYear + "/" + setMonth + "/" + setDay;
+                String gameDateS = setYear + "/" + setMonth + "/" + setDay + " at " + "11:59 PM UTC-4";
+                try {
+                    gameDate = new SimpleDateFormat("yyyy/MM/dd 'at' hh:mm aa").parse(gameDateS);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
 
             }
         });
@@ -104,7 +110,6 @@ public class CreateGameFragment extends Fragment {
                 int getId = parent.getSelectedItemPosition();
                 preferenceSelection = String.valueOf(parent.getItemAtPosition(position));
                 ((TextView) parent.getChildAt(0)).setTextColor(Color.parseColor("#FFFFFF"));
-//                Log.d(TAG, preferenceSelection);
             }
 
             @Override
@@ -140,9 +145,9 @@ public class CreateGameFragment extends Fragment {
                 gamePost.put("signedUp", signedUp);
                 gamePost.put("gameType", preferenceSelection);
 
-                if (gameName.isEmpty() | address.isEmpty() | numberPeople.isEmpty() | time.isEmpty() | gameDate == null | preferenceSelection.isEmpty()) {
+                if (gameName.isEmpty() | address.isEmpty() | numberPeople.isEmpty() | time.isEmpty() | gameDate == null) {
                     Toast.makeText(getActivity(), "Fields Can not be empty", Toast.LENGTH_SHORT).show();
-                } else {
+                } else{
                     db.collection("games").add(gamePost).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
                         public void onSuccess(DocumentReference documentReference) {

@@ -29,7 +29,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity implements CreateAccountFragment.RegisterListener, OpeningFragment.OpeningListner, LoginFragment.LoginListener, HomeFragment.HomeListener, CreateGameFragment.CreateGameListener,
         GamesListFragment.GamesListFragmentListener, GameItemFragment.GameItemListener, ChatMessageFragment.ChatMessageListener, EditGameFragment.EditGameListener, CollectionInboxFragment.CollectionInboxListener,
-        MessageListFragment.MessageListFragmentListener, NotificationListFragment.NotificationListFragmentListener {
+        MessageListFragment.MessageListFragmentListener, NotificationListFragment.NotificationListFragmentListener, ProfileFragment.ProfileListener, AccountInfoFragment.AccountInfoListener,
+        HostedGamesFragment.HostedGamesFragmentListener, UpcomingGamesFragment.UpcomingGamesFragmentListener {
 
     private static final String CHANNEL_ID = "Notification Channel";
     FirebaseAuth mAuth;
@@ -95,6 +96,21 @@ public class MainActivity extends AppCompatActivity implements CreateAccountFrag
     }
 
     @Override
+    public void gotoPersonalInfo() {
+        getSupportFragmentManager().beginTransaction().replace(R.id.rootView, new AccountInfoFragment()).commit();
+    }
+
+    @Override
+    public void gotoHostedGames() {
+        getSupportFragmentManager().beginTransaction().replace(R.id.rootView, new HostedGamesFragment()).commit();
+    }
+
+    @Override
+    public void gotoUpcomingGames() {
+        getSupportFragmentManager().beginTransaction().replace(R.id.rootView, new UpcomingGamesFragment()).commit();
+    }
+
+    @Override
     public void gotoHome() {
         getSupportFragmentManager().beginTransaction().replace(R.id.rootView, new HomeFragment()).commit();
     }
@@ -121,6 +137,11 @@ public class MainActivity extends AppCompatActivity implements CreateAccountFrag
 
     public void gotoInbox(){
         getSupportFragmentManager().beginTransaction().replace(R.id.rootView, new CollectionInboxFragment()).commit();
+    }
+
+    @Override
+    public void goToProfile() {
+        getSupportFragmentManager().beginTransaction().replace(R.id.rootView, new ProfileFragment()).commit();
     }
 
     public void gotoMessageList(){

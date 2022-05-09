@@ -68,6 +68,13 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        view.findViewById(R.id.buttonHomeProfile).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.goToProfile();
+            }
+        });
+
         return view;
     }
 
@@ -88,5 +95,6 @@ public class HomeFragment extends Fragment {
         void gotoFindGame();
         void gotoOpening();
         void gotoInbox();
+        void goToProfile();
     }
 }
