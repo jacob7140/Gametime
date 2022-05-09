@@ -131,7 +131,6 @@ public class CreateGameFragment extends Fragment {
                 int getId = parent.getSelectedItemPosition();
                 preferenceSelection = String.valueOf(parent.getItemAtPosition(position));
                 ((TextView) parent.getChildAt(0)).setTextColor(Color.parseColor("#FFFFFF"));
-//                Log.d(TAG, preferenceSelection);
             }
 
             @Override
@@ -167,9 +166,9 @@ public class CreateGameFragment extends Fragment {
                 gamePost.put("signedUp", signedUp);
                 gamePost.put("gameType", preferenceSelection);
 
-                if (gameName.isEmpty() | address.isEmpty() | numberPeople.isEmpty() | time.isEmpty() | gameDate == null | preferenceSelection.isEmpty()) {
+                if (gameName.isEmpty() | address.isEmpty() | numberPeople.isEmpty() | time.isEmpty() | gameDate == null) {
                     Toast.makeText(getActivity(), "Fields Can not be empty", Toast.LENGTH_SHORT).show();
-                } else {
+                } else{
                     db.collection("games").add(gamePost).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
                         public void onSuccess(DocumentReference documentReference) {

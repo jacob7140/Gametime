@@ -62,7 +62,6 @@ public class GamesListFragment extends Fragment{
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
     ArrayList<Game> gamesList = new ArrayList<Game>();
-    ArrayList<Game> expiredGames = new ArrayList<Game>();
     GamesAdapter adapter;
     Spinner dropdown;
     String preferenceSelection;
@@ -116,7 +115,7 @@ public class GamesListFragment extends Fragment{
             }
         });
 
-        recyclerView = view.findViewById(R.id.hostedGameRecyclerView);
+        recyclerView = view.findViewById(R.id.upcomingGameRecyclerView);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
@@ -250,7 +249,8 @@ public class GamesListFragment extends Fragment{
             preferenceSelection = gamePreferenceList.get(0);
             dropdown.setSelection(0);
         } else {
-            db1.collection("games").whereEqualTo("gameType", preferenceSelection).orderBy("gameDate", Query.Direction.ASCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            db1.collection("games").whereEqualTo("gameType", preferenceSelection).whereGreaterThan("gameDate", Timestamp.now()).orderBy("gameDate", Query.Direction.ASCENDING)
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
                 @Override
                 public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException error) {
                     if (error == null) {
@@ -274,15 +274,12 @@ public class GamesListFragment extends Fragment{
         db1.collection("games").whereLessThanOrEqualTo("gameDate", Timestamp.now()).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException error) {
-                expiredGames.clear();
                 for (QueryDocumentSnapshot document : querySnapshot) {
                     Game game = document.toObject((Game.class));
                     game.setGameId(document.getId());
-                    expiredGames.add(game);
-//                    SimpleDateFormat formatterDateAndTime= new SimpleDateFormat("MM-dd-yyyy");
-//                    Date createdAt = game.getGameDate().toDate();
-//                    String formattedDate = formatterDateAndTime.format(createdAt);
-//                    Log.d(TAG, formattedDate);
+                    db1.collection("expiredGames").document(document.getId()).set(game);
+                    db1.collection("games").document(document.getId()).delete();
+
                 }
             }
         });
