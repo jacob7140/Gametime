@@ -62,6 +62,7 @@ public class GamesListFragment extends Fragment{
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
     ArrayList<Game> gamesList = new ArrayList<Game>();
+    ArrayList<Game> expiredGames = new ArrayList<Game>();
     GamesAdapter adapter;
     Spinner dropdown;
     String preferenceSelection;
@@ -124,7 +125,6 @@ public class GamesListFragment extends Fragment{
         adapter = new GamesAdapter();
         recyclerView.setAdapter(adapter);
 
-//        setupGamesListener();
 
         view.findViewById(R.id.imageButtonFindBack).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,6 +132,8 @@ public class GamesListFragment extends Fragment{
                 mListener.gotoHome();
             }
         });
+
+        deleteOldDocuments();
         return view;
     }
 
@@ -255,6 +257,24 @@ public class GamesListFragment extends Fragment{
         }
     }
 
+    private void deleteOldDocuments() {
+        db1.collection("games").whereLessThanOrEqualTo("gameDate", Timestamp.now()).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException error) {
+                expiredGames.clear();
+                for (QueryDocumentSnapshot document : querySnapshot) {
+                    Game game = document.toObject((Game.class));
+                    game.setGameId(document.getId());
+                    expiredGames.add(game);
+//                    SimpleDateFormat formatterDateAndTime= new SimpleDateFormat("MM-dd-yyyy");
+//                    Date createdAt = game.getGameDate().toDate();
+//                    String formattedDate = formatterDateAndTime.format(createdAt);
+//                    Log.d(TAG, formattedDate);
+                }
+            }
+        });
+    }
+
 
     class GamesAdapter extends RecyclerView.Adapter<GamesAdapter.GamesViewHolder> {
 
@@ -308,8 +328,6 @@ public class GamesListFragment extends Fragment{
                 textViewGameDate.setText(formattedDate);
 
                 textViewGameTime.setText(mGame.gameTime);
-
-//                if (mGame.gameDate < Timestamp.now())
 
                 db1.collection("userdata").document(user.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
