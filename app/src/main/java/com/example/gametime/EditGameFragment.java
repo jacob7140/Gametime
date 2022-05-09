@@ -100,7 +100,7 @@ public class EditGameFragment extends Fragment {
         editTextNumberPeople.setText(game.getNumberPeople());
         editTextTime.setText(game.getGameTime());
 
-        dateString = game.getGameDate().split("/");
+        dateString = game.getGameDate().toString().split("/");
         year = Integer.parseInt(dateString[0]);
         month = Integer.parseInt(dateString[1]);
         day = Integer.parseInt(dateString[2]);
