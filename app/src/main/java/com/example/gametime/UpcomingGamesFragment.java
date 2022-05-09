@@ -33,32 +33,33 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-public class HostedGamesFragment extends Fragment {
+public class UpcomingGamesFragment extends Fragment {
 
     FirebaseFirestore db1 = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseUser user = mAuth.getCurrentUser();
 
-    public HostedGamesFragment() {
+
+    public UpcomingGamesFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
     ArrayList<Game> gamesList = new ArrayList<Game>();
     GamesAdapter adapter;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_hosted_games, container, false);
+        View view = inflater.inflate(R.layout.fragment_upcoming_games, container, false);
+
         recyclerView = view.findViewById(R.id.upcomingGameRecyclerView);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
@@ -67,7 +68,7 @@ public class HostedGamesFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         setupGamesListener();
 
-        view.findViewById(R.id.imageButtonHostedBack).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.imageButtonUpcomingBack).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.goToProfile();
@@ -78,7 +79,7 @@ public class HostedGamesFragment extends Fragment {
     }
 
     private void setupGamesListener() {
-        db1.collection("games").whereEqualTo("createdByUid", user.getUid()).whereGreaterThan("gameDate", Timestamp.now())
+        db1.collection("games").whereArrayContains("signedUp", user.getUid()).whereGreaterThan("gameDate", Timestamp.now())
                 .orderBy("gameDate", Query.Direction.ASCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException error) {
@@ -216,20 +217,20 @@ public class HostedGamesFragment extends Fragment {
         }
     }
 
-    HostedGamesFragmentListener mListener;
+    UpcomingGamesFragmentListener mListener;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            mListener = (HostedGamesFragmentListener) context;
+            mListener = (UpcomingGamesFragment.UpcomingGamesFragmentListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement RegisterListener");
         }
     }
 
 
-    interface HostedGamesFragmentListener{
+    interface UpcomingGamesFragmentListener{
         void goToProfile();
         void gotoGameItem(Game game);
         void gotoEditGame(Game game, MainActivity.PreviousViewState viewState);

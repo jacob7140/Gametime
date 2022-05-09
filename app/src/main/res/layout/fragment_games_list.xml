@@ -29,7 +29,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/hostedGameRecyclerView"
+        android:id="@+id/upcomingGameRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="115dp"
@@ -42,7 +42,7 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:backgroundTint="#FFFFFF"
-        app:layout_constraintBottom_toTopOf="@+id/hostedGameRecyclerView"
+        app:layout_constraintBottom_toTopOf="@+id/upcomingGameRecyclerView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 

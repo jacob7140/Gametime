@@ -29,7 +29,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity implements CreateAccountFragment.RegisterListener, OpeningFragment.OpeningListner, LoginFragment.LoginListener, HomeFragment.HomeListener, CreateGameFragment.CreateGameListener,
         GamesListFragment.GamesListFragmentListener, GameItemFragment.GameItemListener, ChatMessageFragment.ChatMessageListener, EditGameFragment.EditGameListener, CollectionInboxFragment.CollectionInboxListener,
-        MessageListFragment.MessageListFragmentListener, NotificationListFragment.NotificationListFragmentListener, ProfileFragment.ProfileListener, AccountInfoFragment.AccountInfoListener, HostedGamesFragment.HostedGamesFragmentListener {
+        MessageListFragment.MessageListFragmentListener, NotificationListFragment.NotificationListFragmentListener, ProfileFragment.ProfileListener, AccountInfoFragment.AccountInfoListener,
+        HostedGamesFragment.HostedGamesFragmentListener, UpcomingGamesFragment.UpcomingGamesFragmentListener {
 
     private static final String CHANNEL_ID = "Notification Channel";
     FirebaseAuth mAuth;
@@ -106,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements CreateAccountFrag
 
     @Override
     public void gotoUpcomingGames() {
-
+        getSupportFragmentManager().beginTransaction().replace(R.id.rootView, new UpcomingGamesFragment()).commit();
     }
 
     @Override

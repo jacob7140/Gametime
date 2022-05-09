@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#191C7E"
-    tools:context=".HostedGamesFragment" >
+    tools:context=".UpcomingGamesFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/upcomingGameRecyclerView"
@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/imageButtonHostedBack"
+        android:id="@+id/imageButtonUpcomingBack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="?attr/actionModeCloseDrawable"
@@ -25,11 +25,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView12"
+        android:id="@+id/textView13"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
-        android:text="MY HOSTED GAMES"
+        android:text="MY UPCOMING GAMES"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
         android:textStyle="bold"
