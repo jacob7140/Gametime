@@ -32,6 +32,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
@@ -59,7 +61,8 @@ public class CreateGameFragment extends Fragment {
     String preferenceSelection;
     ArrayList<String> likedBy = new ArrayList<>();
     ArrayList<String> signedUp = new ArrayList<>();
-
+    ArrayAdapter<String> adapter;
+    ArrayList<String> gamePreferenceList;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -94,7 +97,25 @@ public class CreateGameFragment extends Fragment {
             }
         });
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.preferences_array_changed, android.R.layout.simple_spinner_item);
+        gamePreferenceList = new ArrayList<>();
+        adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, gamePreferenceList);
+        gamePreferenceList.add("Loading...");
+        db.collection("gamePreferences").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot querySnapshots) {
+                gamePreferenceList.clear();
+                gamePreferenceList.add("Loading...");
+                for(QueryDocumentSnapshot documentSnapshot : querySnapshots){
+                    gamePreferenceList.add((String) documentSnapshot.get("Type"));
+                }
+                gamePreferenceList.remove("Loading...");
+                gamePreferenceList.add("Other");
+                Log.d(TAG, "onSuccess: " + adapter.toString());
+                preferenceSelection = gamePreferenceList.get(0);
+                adapter.notifyDataSetChanged();
+                Log.d(TAG, "onSuccess: " +  dropdown.getCount());
+            }
+        });
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
         dropdown.setAdapter(adapter);
 

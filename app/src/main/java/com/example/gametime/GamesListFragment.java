@@ -45,6 +45,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -95,8 +96,6 @@ public class GamesListFragment extends Fragment{
                 }
                 gamePreferenceList.remove("Loading...");
                 gamePreferenceList.add("Other");
-                gamePreferenceList.add("<Add to List>");
-                gamePreferenceList.add("<Remove from List>");
                 Log.d(TAG, "onSuccess: " + spinnerAdapter.toString());
                 spinnerAdapter.notifyDataSetChanged();
                 Log.d(TAG, "onSuccess: " +  dropdown.getCount());
@@ -140,6 +139,19 @@ public class GamesListFragment extends Fragment{
         return view;
     }
 
+    private void sortLikedGamesFromToptoBottom(){
+        ArrayList<Game> tempList = new ArrayList<>();
+        for(Game game: gamesList){
+            if(game.getLikedBy().contains(mAuth.getCurrentUser().getUid())){
+                tempList.add(0, game);
+            } else {
+                tempList.add(game);
+            }
+        }
+        gamesList.clear();
+        gamesList.addAll(tempList);
+    }
+
     private void setupGamesListener() {
         if (preferenceSelection.equals("All")) {
 
@@ -153,6 +165,7 @@ public class GamesListFragment extends Fragment{
                             game.setGameId(document.getId());
                             gamesList.add(game);
                         }
+                        sortLikedGamesFromToptoBottom();
                         adapter.notifyDataSetChanged();
                     } else {
                         error.printStackTrace();
@@ -172,7 +185,7 @@ public class GamesListFragment extends Fragment{
                 public void onClick(DialogInterface dialogInterface, int i) {
                     HashMap<String, Object> gamePreferenceData = new HashMap<>();
                     gamePreferenceData.put("Type", editTextGamePreference.getText().toString());
-                    gamePreferenceList.add(gamePreferenceList.size() - 2, editTextGamePreference.getText().toString());
+                    gamePreferenceList.add(gamePreferenceList.size() - 3, editTextGamePreference.getText().toString());
                     db1.collection("gamePreferences").add(gamePreferenceData);
                 }
             });
@@ -251,6 +264,7 @@ public class GamesListFragment extends Fragment{
                             game.setGameId(document.getId());
                             gamesList.add(game);
                         }
+                        sortLikedGamesFromToptoBottom();
                         adapter.notifyDataSetChanged();
                     } else {
                         error.printStackTrace();
@@ -322,7 +336,10 @@ public class GamesListFragment extends Fragment{
                         if (mGame.getCreatedByUid().equals(user.getUid()) || userRole.equals("Admin")) {
                             imageViewEdit.setVisibility(View.VISIBLE);
                             imageViewTrash.setVisibility(View.VISIBLE);
-
+                            if(userRole.equals("Admin")) {
+                                gamePreferenceList.add("<Add to List>");
+                                gamePreferenceList.add("<Remove from List>");
+                            }
                             imageViewEdit.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
