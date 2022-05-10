@@ -25,25 +25,40 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
+/**
+ * This MessageListFragment Class creates a reusable user interface for the Message List Page of the app.
+ */
 public class MessageListFragment extends Fragment {
 
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    final private String TAG = "data";
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();                    //FirebaseAuth Instance
+    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();    //FirebaseUser Instance
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();             //FireBaseFireStore Instance - Database
 
+    /**
+     * This method is used to start the activity
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
-    private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
-    private GamesAdapter adapter;
-    private ArrayList<Game> gameList = new ArrayList<Game>();
+    private RecyclerView recyclerView;                          //RecyclerView Instance
+    private RecyclerView.LayoutManager layoutManager;           //Recycler View LayoutManager Instance
+    private GamesAdapter adapter;                               //GameAdapter Instance
+    private ArrayList<Game> gameList = new ArrayList<Game>();      //Game ArrayList - list of game events
+
+    /**
+     * This creates visual on what is shown on the screen.
+     * @param inflater this instantiate the contents of layout XML files
+     * @param container this acts as a container
+     * @param savedInstanceState - android activity
+     * @return the view of all items that will be shown onto the screen of the user
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_message_list, container, false);
         recyclerView = view.findViewById(R.id.findMessageRecyclerView);
         recyclerView.setHasFixedSize(true);
@@ -51,35 +66,37 @@ public class MessageListFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         adapter = new GamesAdapter();
         recyclerView.setAdapter(adapter);
-        setupGamesListener();
+        setupGamesListener(); //this will setup all game's group messages
 
-
-
-        return view;
+        return view; //return view
     }
 
+    /**
+     * This method sets up the games that is retrieved from the FirebaseFireStore Database
+     */
     private void setupGamesListener() {
         db.collection("userdata").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    DocumentSnapshot doc = task.getResult();
-                    if(doc.exists()) {
-                        if (doc.get("SignedGameID") != null) {
-                            ArrayList<String> data = (ArrayList<String>) doc.get("SignedGameID");
-                            if (!data.isEmpty()) {
-                                for (String id : data) {
+                if(task.isSuccessful()){                                                            //checks if the task is successful to retrieve the data
+                    DocumentSnapshot doc = task.getResult();                                        //set results of the task document
+                    if(doc.exists()) {                                                              //check if the document exists
+                        if (doc.get("SignedGameID") != null) {                                      //checks if signedGameID is not equal to null
+                            ArrayList<String> data = (ArrayList<String>) doc.get("SignedGameID");   //store signed game id list
+                            if (!data.isEmpty()) {                                                  //checks if data is not empty
+                                for (String id : data) { //loops through the data
+
+                                    //get data from the database for games
                                     db.collection("games").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                         @Override
                                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                            DocumentSnapshot document = task.getResult();
-                                            if (task.isSuccessful()) {
-                                                Game game = document.toObject(Game.class);
-                                                game.setGameId(document.getId());
-                                                gameList.add(game);
-
+                                            DocumentSnapshot document = task.getResult();   //get document results
+                                            if (task.isSuccessful()) {                      //checks if it is successful
+                                                Game game = document.toObject(Game.class);  //convert document to game object and store it to game
+                                                game.setGameId(document.getId());           //set game id
+                                                gameList.add(game);                         //add game to list
                                             }
-                                            adapter.notifyDataSetChanged();
+                                            adapter.notifyDataSetChanged();                 //adapter - notify data change
                                         }
                                     });
                                 }
@@ -92,8 +109,17 @@ public class MessageListFragment extends Fragment {
 
     }
 
+    /**
+     * This is GamesAdapter Class
+     */
     class GamesAdapter extends RecyclerView.Adapter<GamesAdapter.GamesViewHolder> {
 
+        /**
+         * This method is used to get a new view
+         * @param parent this is a view group
+         * @param viewType this is a integer value
+         * @return
+         */
         @NonNull
         @Override
         public GamesAdapter.GamesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -101,41 +127,66 @@ public class MessageListFragment extends Fragment {
             return new GamesAdapter.GamesViewHolder(view);
         }
 
+        /**
+         * Returns the total items that are in the game list
+         * @return the number of items from the game list
+         */
         @Override
         public int getItemCount() {
             return gameList.size();
         }
 
+        /**
+         * This method is used to recycle view and bind it with new data
+         * @param holder this is the new view
+         * @param position the position of the game from the list
+         */
         @Override
         public void onBindViewHolder(@NonNull GamesAdapter.GamesViewHolder holder, int position) {
             Game game = gameList.get(position);
             holder.setUpGameRow(game);
         }
 
+        /**
+         * This is a GamesViewHolder
+         */
         class GamesViewHolder extends RecyclerView.ViewHolder {
-            Game mGame;
-            TextView textViewGameName, textViewGameDate, textViewGameTime;
+            private Game mGame;                                                     //Game Instance
+            private TextView textViewGameName, textViewGameDate, textViewGameTime;  //TextView Instances
 
+            /**
+             * GamesViewHolder Class Constructor
+             * @param itemView - view
+             */
             public GamesViewHolder(@NonNull View itemView) {
                 super(itemView);
 
+                //Initialized objects
                 textViewGameName = itemView.findViewById(R.id.textViewNotificationGameName);
                 textViewGameDate = itemView.findViewById(R.id.textViewNotificationTime);
                 textViewGameTime = itemView.findViewById(R.id.textViewNotificationMsg);
+
+                //set it as clickable itemView
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mListener.gotoChatMessage(mGame, PreviousViewState.INBOX);
+                        mListener.gotoChatMessage(mGame, PreviousViewState.INBOX); //go to inbox page
                     }
                 });
 
             }
 
+            /**
+             * This method sets up game row
+             * @param game the game object
+             */
             public void setUpGameRow(Game game) {
-                this.mGame = game;
-                textViewGameName.setText(mGame.getGameName());
-                textViewGameDate.setText(mGame.gameDate.toString());
-                textViewGameTime.setText("Group Message");
+
+                this.mGame = game;                              //set game to mGame
+                textViewGameName.setText(mGame.getGameName());  //set game name to textView
+                textViewGameDate.setText(mGame.gameDate.toString());       //set game date to textView
+                textViewGameTime.setText("Group Message");      //set "Group Message" to textView
+
             }
         }
     }

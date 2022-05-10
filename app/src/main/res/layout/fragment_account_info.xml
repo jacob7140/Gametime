@@ -21,13 +21,28 @@
         android:id="@+id/buttonAccountInfoSave"
         android:layout_width="225dp"
         android:layout_height="75dp"
+        android:layout_marginTop="50dp"
         android:text="Save Changes"
+        app:backgroundTint="#0426FC"
+        app:cornerRadius="20dp"
+        app:layout_constraintBottom_toTopOf="@id/buttonAccountInfoDelete"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextAccountInfoConfirmPassword"
+        app:layout_constraintVertical_bias="0.481" />
+
+    <Button
+        android:id="@+id/buttonAccountInfoDelete"
+        android:layout_width="225dp"
+        android:layout_height="75dp"
+        android:layout_marginBottom="50dp"
+        android:text="Delete Account"
         app:backgroundTint="#0426FC"
         app:cornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextAccountInfoConfirmPassword"
+        app:layout_constraintTop_toBottomOf="@id/buttonAccountInfoSave"
         app:layout_constraintVertical_bias="0.481" />
 
     <EditText
