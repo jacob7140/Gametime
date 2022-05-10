@@ -3,28 +3,46 @@ package com.example.gametime;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.os.Parcel;
+import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.OAuthCredential;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class AccountInfoFragment extends Fragment {
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseUser user = mAuth.getCurrentUser();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 
     public AccountInfoFragment() {
@@ -36,7 +54,7 @@ public class AccountInfoFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    EditText editTextFN, editTextEmail, editTextPassword, editTextConfirmPassword;
+    private EditText editTextFN, editTextEmail, editTextPassword, editTextConfirmPassword;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -102,6 +120,66 @@ public class AccountInfoFragment extends Fragment {
                 AlertDialog dialog = builder.create();
                 dialog.show();
             }
+        });
+
+        //find view AccountInfoDelete button and set as clickable button
+        view.findViewById(R.id.buttonAccountInfoDelete).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Declared AlertDialog
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setCancelable(true);
+                builder.setTitle("Are you sure you want to delete your account?"); //Title
+                builder.setMessage("Enter your password and click confirm. Warning: Your account is not recoverable after deletion and will be lost forever!");//Message
+                //declared editText for password input
+                EditText editTextPassword = new EditText(getContext());
+                editTextPassword.setHint("Password"); //set hint as "Password"
+                editTextPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());//set transformation to hidden the password with dots
+                builder.setView(editTextPassword); //add editTextPassword to builder
+
+                //DialogAlert clickable confirm button
+                builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //re-authenticates the account to replace expired token with a new token
+                        user.reauthenticate(EmailAuthProvider.getCredential(user.getEmail(), editTextPassword.getText().toString())).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){ //checks if the task was successful
+                                    //Then delete user account
+                                    user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                //create new activity, clear previous activity,and start a new activity at MainActivity.class.
+                                                startActivity(new Intent(getActivity(), MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                                                //send message on screen
+                                                Toast.makeText(getActivity(), "Account Deleted", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                //send message on screen
+                                                Toast.makeText(getActivity(), "Failed to Delete Account, try again later!", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    Toast.makeText(getActivity(), "Wrong Password! Try Again!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                });
+
+                //DialogAlert clickable cancel button
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            };
         });
 
         view.findViewById(R.id.buttonAccountInfoBack).setOnClickListener(new View.OnClickListener() {

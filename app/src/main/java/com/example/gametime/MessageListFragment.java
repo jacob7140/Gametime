@@ -23,7 +23,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * This MessageListFragment Class creates a reusable user interface for the Message List Page of the app.
@@ -43,11 +45,11 @@ public class MessageListFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    private RecyclerView recyclerView;                          //RecyclerView Instance
-    private RecyclerView.LayoutManager layoutManager;           //Recycler View LayoutManager Instance
-    private GamesAdapter adapter;                               //GameAdapter Instance
-    private ArrayList<Game> gameList = new ArrayList<Game>();      //Game ArrayList - list of game events
-
+    private RecyclerView recyclerView;                                                  //RecyclerView Instance
+    private RecyclerView.LayoutManager layoutManager;                                   //Recycler View LayoutManager Instance
+    private GamesAdapter adapter;                                                       //GameAdapter Instance
+    private ArrayList<Game> gameList = new ArrayList<Game>();                           //Game ArrayList - list of game events
+    private SimpleDateFormat formatterDate = new SimpleDateFormat("MM-dd-yyyy"); //Date format
     /**
      * This creates visual on what is shown on the screen.
      * @param inflater this instantiate the contents of layout XML files
@@ -166,6 +168,7 @@ public class MessageListFragment extends Fragment {
                 textViewGameDate = itemView.findViewById(R.id.textViewNotificationTime);
                 textViewGameTime = itemView.findViewById(R.id.textViewNotificationMsg);
 
+
                 //set it as clickable itemView
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -184,7 +187,8 @@ public class MessageListFragment extends Fragment {
 
                 this.mGame = game;                              //set game to mGame
                 textViewGameName.setText(mGame.getGameName());  //set game name to textView
-                textViewGameDate.setText(mGame.gameDate.toString());       //set game date to textView
+                String gameDate = formatterDate.format(mGame.getGameDate().toDate());
+                textViewGameDate.setText(gameDate);              //set game date to textView
                 textViewGameTime.setText("Group Message");      //set "Group Message" to textView
 
             }
