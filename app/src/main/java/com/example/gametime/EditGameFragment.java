@@ -38,6 +38,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -88,7 +89,8 @@ public class EditGameFragment extends Fragment {
     private ImageButton imageBack;                                                      //ImageButton - back button
     private Button updateButton;                                                        //Button - update button
     private Spinner dropdown;                                                           //Spinner - dropdown object
-    private String gameDate;                                                            //gameDate - the date when game event was created
+    private Date gameDate;                                                              //gameDate - the date when game event was created
+    private String gameDateS;                                                           //gameDateS - the date when game event was created
     private String preferenceSelection;                                                 //preferenceSelection - current preference selected
     private ArrayList<String> likedBy = new ArrayList<>();                              //likedBy ArrayList - holds user id number
     private ArrayAdapter<String> adapter;                                               //adapter ArrayAdapter - used by dropdown object
@@ -98,6 +100,7 @@ public class EditGameFragment extends Fragment {
     private int year, month, day;                                                       //integer values - Year, Month, Day
     private long differenceInTime, differenceInDays;                                    //difference in time and in days between two different dates
     private String[] dateString;                                                        //dateString
+    private SimpleDateFormat formatterDate = new SimpleDateFormat("yyyy/MM/dd"); //Date format
 
     /**
      * This creates visual on what is shown on the screen.
@@ -128,7 +131,8 @@ public class EditGameFragment extends Fragment {
         editTextNumberPeople.setText(game.getNumberPeople());
         editTextTime.setText(game.getGameTime());
 
-        dateString = game.getGameDate().toString().split("/");
+        String formattedGameDate = formatterDate.format(game.getGameDate().toDate());
+        dateString = formattedGameDate.split("/");
         year = Integer.parseInt(dateString[0]);
         month = Integer.parseInt(dateString[1]);
         day = Integer.parseInt(dateString[2]);
@@ -138,10 +142,10 @@ public class EditGameFragment extends Fragment {
         calendarView.setDate(calendar.getTimeInMillis());
         updateButton.setText("Update Post");
 
-        //checks if game date is equl to null
-        if(gameDate == null) {
+        //checks if game date is equal to null
+        if(gameDateS == null) {
             updateCalendarInfo(); //call updateCalendarInfo method
-            gameDate = year + "/" + month + "/" + day; //set date YYYY/MM/DD
+            gameDateS = year + "/" + month + "/" + day; //set date YYYY/MM/DD
         }
 
         //sets the back button as clickable button to go back to previous page
@@ -170,7 +174,12 @@ public class EditGameFragment extends Fragment {
                 String setMonth = String.valueOf(month + 1); //convert month to string
                 String setDay = String.valueOf(dayOfMonth); //convert day to string
 
-                gameDate = setYear + "/" + setMonth + "/" + setDay; //set date of YYYY/MM/DD
+                gameDateS = setYear + "/" + setMonth + "/" + setDay + " at " + "11:59 PM UTC-4";
+                try {
+                    gameDate = new SimpleDateFormat("yyyy/MM/dd 'at' hh:mm aa").parse(gameDateS);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 calendar.set(year, month, dayOfMonth);//set calendar date
                 updateCalendarInfo();//call updateCalendarInfo Method
             }
@@ -179,7 +188,7 @@ public class EditGameFragment extends Fragment {
         gamePreferenceList = new ArrayList<>(); //initialized game preference list
         adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, gamePreferenceList); //initialized adapter
         gamePreferenceList.add("Loading..."); //add first item to gamePreferenceList
-        //call listner to FireBAseFireStore database for gamePreferenceList Data
+        //call listener to FireBaseFireStore database for gamePreferenceList Data
         db.collection("gamePreferences").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot querySnapshots) {
@@ -262,7 +271,7 @@ public class EditGameFragment extends Fragment {
                     Toast.makeText(getActivity(), "Fields Can not be empty", Toast.LENGTH_SHORT).show(); //show message on screen
 
                     //checks if the game date is not equal to null
-                } else if (gameDate != null) {
+                } else if (gameDateS != null) {
 
                     //checks difference in days is less than or equal to zero
                     if (differenceInDays <= 0) {
