@@ -32,6 +32,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -137,7 +138,7 @@ public class AccountInfoFragment extends Fragment {
                 editTextPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());//set transformation to hidden the password with dots
                 builder.setView(editTextPassword); //add editTextPassword to builder
 
-                //DialogAlert clickable confirm button
+                //DialogAlert builder set clickable confirm button
                 builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -151,8 +152,9 @@ public class AccountInfoFragment extends Fragment {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
-                                                //create new activity, clear previous activity,and start a new activity at MainActivity.class.
-                                                startActivity(new Intent(getActivity(), MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                                                deleteUserData();
+                                                mAuth.signOut();
+                                                mListener.gotoOpening();
                                                 //send message on screen
                                                 Toast.makeText(getActivity(), "Account Deleted", Toast.LENGTH_SHORT).show();
                                             } else {
@@ -169,12 +171,10 @@ public class AccountInfoFragment extends Fragment {
                     }
                 });
 
-                //DialogAlert clickable cancel button
+                //DialogAlert builder set clickable cancel button
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                    }
+                    public void onClick(DialogInterface dialogInterface, int i) { }
                 });
 
                 AlertDialog dialog = builder.create();
@@ -192,6 +192,109 @@ public class AccountInfoFragment extends Fragment {
         return view;
     }
 
+    /**
+     * This method will delete all the data of the current user. The user data that is being deleted is the hosted game events, group message chat,
+     * notifications, removed from other game events, and etc.
+     *
+     */
+    public void deleteUserData(){
+        db.collection("userdata").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    if(documentSnapshot.exists()){
+                        if(documentSnapshot.contains("SignedGameID")){
+                            ArrayList<String> signedGameIDList = (ArrayList<String>) documentSnapshot.get("SignedGameID");
+                            isGameHostedByUser(signedGameIDList);
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * This method deletes hosted games of the current user and removes the current user from existing games that the user joined.
+     * @param signedGameIDList signed game id list of games that the current user is signed up.
+     */
+    public void isGameHostedByUser(ArrayList<String> signedGameIDList){
+        for(String gameID : signedGameIDList) {
+            db.collection("games").document(gameID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if(task.isSuccessful()){
+                        DocumentSnapshot documentSnapshot = task.getResult();
+                        if(documentSnapshot.exists()){
+                            //checks if this game
+                            if(documentSnapshot.get("createdByUid").equals(user.getUid())){
+                                ArrayList<String> otherUsers = (ArrayList<String>) documentSnapshot.get("signedUp");
+                                removeGameFromOtherUserData(otherUsers, gameID);
+                                deleteHostedGameByUser(gameID);
+                            } else {
+                                HashMap<String, Object> updateSignedUp = new HashMap<>();
+                                updateSignedUp.put("signedUp", FieldValue.arrayRemove(user.getUid()));
+                                db.collection("games").document(gameID).update(updateSignedUp);
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        deleteCurrentUser();
+    }
+
+    /**
+     * This method updates other users data from the database that removes game id of the hosted game that is being deleted by the host.
+     *
+     * @param users list of user identification numbers
+     * @param gameID game id of the hosted game
+     */
+    public void removeGameFromOtherUserData(ArrayList<String> users, String gameID){
+        for(String userID : users){
+            HashMap<String, Object> updateSignedGameID = new HashMap<>();
+            updateSignedGameID.put("SignedGameID", FieldValue.arrayRemove(gameID));
+            db.collection("userdata").document(userID).update(updateSignedGameID);
+        }
+    }
+
+    /**
+     * This method deletes hosted game from the database
+     * @param gameID game id of the hosted game
+     */
+    public void deleteHostedGameByUser(String gameID){
+        db.collection("games").document(gameID).delete();
+    }
+
+    /**
+     * This method deletes current user from the database
+     */
+    public void deleteCurrentUser(){
+        deleteAllNotificationsFromCurrentUser();
+        db.collection("userdata").document(user.getUid()).delete();
+    }
+
+    /**
+     * This method deletes all of the notifications of a current user
+     */
+    public void deleteAllNotificationsFromCurrentUser(){
+        db.collection("userdata").document(user.getUid()).collection("notifications")
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>(){
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(QueryDocumentSnapshot document : task.getResult()){
+                        if(document.exists()){
+                            db.collection("userdata").document(user.getUid())
+                                    .collection("notifications").document(document.getId())
+                                    .delete();
+                        }
+                    }
+                }
+            }
+        });
+    }
+
     AccountInfoListener mListener;
 
     @Override
@@ -206,5 +309,6 @@ public class AccountInfoFragment extends Fragment {
 
     interface AccountInfoListener{
         void goToProfile();
+        void gotoOpening();
     }
 }

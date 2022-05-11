@@ -91,7 +91,7 @@ public class GameItemFragment extends Fragment {
 
         SimpleDateFormat formatterDate = new SimpleDateFormat("MM-dd-yyyy");
         Date gameDateD = mGame.getGameDate().toDate();
-        String formattedGameDate = formatterDate.format(gameDateD);
+        String formattedGameDate = formatterDate.format(gameDateD) + " at " + mGame.getGameTime();
         gameDate.setText(formattedGameDate);
 
         numPeople.setText(mGame.getNumberPeople());
