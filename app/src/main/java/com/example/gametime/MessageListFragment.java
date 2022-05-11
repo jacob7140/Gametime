@@ -21,11 +21,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 /**
  * This MessageListFragment Class creates a reusable user interface for the Message List Page of the app.
@@ -92,11 +94,18 @@ public class MessageListFragment extends Fragment {
                                     db.collection("games").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                         @Override
                                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                            DocumentSnapshot document = task.getResult();   //get document results
-                                            if (task.isSuccessful()) {                      //checks if it is successful
-                                                Game game = document.toObject(Game.class);  //convert document to game object and store it to game
-                                                game.setGameId(document.getId());           //set game id
-                                                gameList.add(game);                         //add game to list
+                                            if (task.isSuccessful()) {                          //checks if it is successful
+                                                DocumentSnapshot document = task.getResult();   //get document results
+                                                if(document.exists()) {                         //Checks if the document exists
+                                                    Game game = document.toObject(Game.class);  //convert document to game object and store it to game
+                                                    game.setGameId(document.getId());           //set game id
+                                                    gameList.add(game);                         //add game to list
+                                                } else {
+                                                    //If the document id does not exist then remove the id from userdata SignedGameID List
+                                                    HashMap<String, Object> updateSignedGameIDList = new HashMap<>();   //declared HashMap object
+                                                    updateSignedGameIDList.put("SignedGameID", FieldValue.arrayRemove(id)); //add document id to HashMap
+                                                    db.collection("userdata").document(user.getUid()).update(updateSignedGameIDList); //update userdata database
+                                                }
                                             }
                                             adapter.notifyDataSetChanged();                 //adapter - notify data change
                                         }

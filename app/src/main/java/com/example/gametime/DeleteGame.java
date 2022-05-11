@@ -57,24 +57,15 @@ public class DeleteGame implements Serializable {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
-                    for(final QueryDocumentSnapshot doc : task.getResult()){
+                    for(QueryDocumentSnapshot doc : task.getResult()){
                         if(doc.exists()){
                             db.collection("games").document(mGame.getGameId())
                                     .collection("ChatRoom").document(doc.getId())
-                                    .delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) { /* I will add text log here later on */ }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) { /* I will add text log here later on */}
-                            });
+                                    .delete();
                         }
                     }
                 }
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) { /* I will add text log here later on */ }
         });
     }
 }

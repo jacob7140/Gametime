@@ -135,16 +135,18 @@ public class GamesListFragment extends Fragment{
     }
 
     private void sortLikedGamesFromToptoBottom(){
-        ArrayList<Game> tempList = new ArrayList<>();
-        for(Game game: gamesList){
-            if(game.getLikedBy().contains(mAuth.getCurrentUser().getUid())){
-                tempList.add(0, game);
-            } else {
-                tempList.add(game);
+        if(mAuth.getCurrentUser() != null) {
+            ArrayList<Game> tempList = new ArrayList<>();
+            for (Game game : gamesList) {
+                if (game.getLikedBy().contains(mAuth.getCurrentUser().getUid())) {
+                    tempList.add(0, game);
+                } else {
+                    tempList.add(game);
+                }
             }
+            gamesList.clear();
+            gamesList.addAll(tempList);
         }
-        gamesList.clear();
-        gamesList.addAll(tempList);
     }
 
     private void setupGamesListener() {
@@ -158,7 +160,11 @@ public class GamesListFragment extends Fragment{
                         for (QueryDocumentSnapshot document : querySnapshot) {
                             Game game = document.toObject(Game.class);
                             game.setGameId(document.getId());
-                            gamesList.add(game);
+                            //checks signedUp list to see if it contains current user, or checks if the signedUp list is less than number of people
+                            if(game.getSignedUp().contains(user.getUid()) || game.getSignedUp().size() < Integer.parseInt(game.getNumberPeople())) {
+                                //add game to game list if the game is not full or if it is the user is signed up for the game
+                                gamesList.add(game);
+                            } //otherwise don't show the game on game list if the game full
                         }
                         sortLikedGamesFromToptoBottom();
                         adapter.notifyDataSetChanged();
@@ -258,7 +264,11 @@ public class GamesListFragment extends Fragment{
                         for (QueryDocumentSnapshot document : querySnapshot) {
                             Game game = document.toObject(Game.class);
                             game.setGameId(document.getId());
-                            gamesList.add(game);
+                            //checks signedUp list to see if it contains current user, or checks if the signedUp list is less than number of people
+                            if(game.getSignedUp().contains(user.getUid()) || game.getSignedUp().size() < Integer.parseInt(game.getNumberPeople())) {
+                                //add game to gamelist if the game is not full or if it is the user is signed up for the game
+                                gamesList.add(game);
+                            } //otherwise don't show the game on game list if the game full
                         }
                         sortLikedGamesFromToptoBottom();
                         adapter.notifyDataSetChanged();
